@@ -1,0 +1,12 @@
+<button class="mark">mark!</button>
+
+<%
+if(points && points.length) {%>
+	<h4>Points</h4>
+<ul>
+<% _.each(points, function(p){ %>
+	<li>(<%= p.longitude+', '+p.latitude%>)</li>
+<% }) %>
+</ul>
+
+<%}%>
