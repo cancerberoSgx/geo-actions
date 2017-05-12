@@ -21,14 +21,15 @@ _(Application.prototype).extend({
 		this.$containerEl = jQuery('#mainContainer'); 
 		this.$body = jQuery('.main-view-container');
 
+		this.positionManager = new PositionManager()
+		this.positionManager.startWatching()
+
 		this.router = new Router(this);
 		Backbone.history.start();
 
 		// var navigateTo = Backbone.history.getHash() || 'index'; 
 		// Backbone.history.navigate(navigateTo, {trigger: true});
 
-		this.positionManager = new PositionManager()
-		this.positionManager.startWatching()
 	}
 
 ,	showView: function(view)
@@ -37,6 +38,7 @@ _(Application.prototype).extend({
 		this.currentView = view;
 		this.$containerEl.empty();
 		view.$el = this.$containerEl
+		view.application = this
 		view.render()
 		// this.applicationView.renderIn(this.$containerEl);
 		document.title = view.title || document.title;

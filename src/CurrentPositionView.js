@@ -1,12 +1,14 @@
 var AbstractView = require('./AbstractView')
 var Backbone = require('backbone')
+var _ = require('underscore')
 
 module.exports = AbstractView.extend({
 
-	initialize: function()
+	initialize: function(application)
 	{
 		var self = this
-		AbstractView.prototype.initialize(self, arguments)
+		// AbstractView.prototype.initialize(self, arguments)
+		self.application = application
 		self.model = new Backbone.Model()
 		self.model.on('change', function()
 		{

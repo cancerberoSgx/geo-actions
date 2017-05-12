@@ -4,12 +4,8 @@ var _ = require('underscore')
 module.exports = Backbone.Router.extend({
 
 	routes: {
-
-		'polygonEditor': 'polygonEditor'
-	,	'polygonEditor/:polygonEditor': 'polygonEditor'
-	,	'polygonEditor/:polygonEditor?:options': 'polygonEditor'
-
-	// ,	'*': 'unknownPath'
+		'polygonEditor': 'polygonEditor',
+		'currentPosition': 'currentPosition'
 	}
 
 ,	initialize: function(application) 
@@ -30,6 +26,19 @@ module.exports = Backbone.Router.extend({
 		}
 	}
 
+,	polygonEditor: function() 
+	{
+		var PolygonEditorView = require('./PolygonEditorView')
+		var view = new PolygonEditorView(this.application)
+		this.showView(view)
+	}
+
+	,currentPosition: function()
+	{
+		var CurrentPositionView = require('./CurrentPositionView')
+		var view = new CurrentPositionView(this.application)
+		this.showView(view)
+	}
 ,	parseOptions: function(options)
 	{
 		var params = {}
@@ -43,20 +52,5 @@ module.exports = Backbone.Router.extend({
 		}) 
 		return params
 	}
-
-,	polygonEditor: function(file, options) 
-	{
-		options = options || ''
-		var params = this.parseOptions(options)
-		var PolygonEditorView = require('./PolygonEditorView')
-		var view = new PolygonEditorView(this.application)
-		this.showView(view)
-		console.log('foo')
-	}
-
-	// ,unknownPath: function()
-	// {
-	// 	alert('path not found: '+Backbone.history.hash)
-	// }
 })
 

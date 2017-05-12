@@ -8,8 +8,6 @@ var Class = function()
 {
 }
 
-module.exports = Class
-
 _.extend(Class.prototype, Backbone.Events)
 
 _.extend(Class.prototype, {
@@ -49,3 +47,6 @@ _.extend(Class.prototype, {
 		return this.currentPosition
 	}
 })
+
+
+module.exports = Class

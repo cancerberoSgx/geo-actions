@@ -1,4 +1,6 @@
 var AbstractView = require('./AbstractView')
+var Backbone = require('backbone')
+var _ = require('underscore')
 
 module.exports = AbstractView.extend({
 
@@ -9,19 +11,29 @@ module.exports = AbstractView.extend({
 
 	template: 'polygon-editor.html',
 
-	initialize: function()
+	initialize: function(application)
 	{
-		AbstractView.prototype.initialize(this, arguments)
+		this.application = application
 		this.points = []
 		this.polygonName = 'unamed1'
+		this.model = new Backbone.Model()
+		this.model.set('points', [])
+		this.model.set('name', '')
+		this.model.on('change',_.bind(this.render, this))
 	},
 
 	mark: function()
 	{
-		this.points.push({latitude: Math.random(), longitude: Math.random()})
+		var currentPos = this.application.positionManager.getCurrentPosition()
+		console.log(currentPos)
+		var points = this.model.get('points')
+		points.push(currentPos)
+		this.model.set('name', new Date().getTime()+'')
+		this.model.set('points', points)
+		// this.points.push({latitude: currentPos.latitude, longitude: Math.random()})
 		// this.application.showView(this)
-		this.render()
-		console.log(this.points.length)
+		// this.render()
+		// console.log(this.points.length)
 	},
 
 	save: function()
