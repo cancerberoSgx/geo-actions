@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>geo actions test</title>
+</head>
+<body>
+<div id="demo"></div>
+<script>
+
+setTimeout(function()
+{
+	navigator.geolocation.getCurrentPosition(function(position)
+	{
+		var x = document.getElementById('demo');
+		x.innerHTML = 'Latitude: ' + position.coords.latitude + 
+    		'<br>Longitude: ' + position.coords.longitude; 
+	})
+}, 1000)
+</script>
+</body>
+</html>
