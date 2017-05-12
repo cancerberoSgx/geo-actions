@@ -2,6 +2,9 @@
 <html>
 <head>
 	<title>geo actions test</title>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 </head>
 <body>
 <p id="banner">hello</p>
@@ -10,32 +13,41 @@
 
 var id, target, option;
 
-function success(pos) {
-  var crd = pos.coords;
+function success(pos) 
+{
+	var crd = pos.coords;
 
-  document.getElementById('demo').innerHTML = 'Latitude: ' + crd.latitude + 
-    		'<br>Longitude: ' + crd.longitude; 
-  if (target.latitude === crd.latitude && target.longitude === crd.longitude) 
-  {
-    console.log('Congratulation, you reach the target');
-    navigator.geolocation.clearWatch(id);
-  }
+	document.getElementById('demo').innerHTML = //JSON.stringify(crd, 0, 4)
+		'Latitude: ' + crd.latitude + 
+		'<br>Longitude: ' + crd.longitude + 
+		'<br>Altitud: ' + crd.altitud + 
+		'<br>Accuracy: ' + crd.accuracy + 
+		'<br>Altitud Accuracy: ' + crd.altitudAccuracy + 
+		'<br>Heading: ' + crd.heading + 
+		'<br>Speed: ' + crd.speed + 
+		'<br>Timestamp: ' + crd.timestamp ;
+
+	if (target.latitude === crd.latitude && target.longitude === crd.longitude) 
+	{
+		console.log('Congratulation, you reach the target');
+		navigator.geolocation.clearWatch(id);
+	}
 };
 
 function error(err) 
 {
-  console.warn('ERROR(' + err.code + '): ' + err.message);
+	console.warn('ERROR(' + err.code + '): ' + err.message);
 };
 
 target = {
-  latitude : 0,
-  longitude: 0,
+	latitude : 0,
+	longitude: 0,
 }
 
 options = {
-  enableHighAccuracy: true,
-  timeout: 3000,
-  maximumAge: 0
+	enableHighAccuracy: true,
+	timeout: 3000,
+	maximumAge: 0
 };
 
 id = navigator.geolocation.watchPosition(success, error, options);
