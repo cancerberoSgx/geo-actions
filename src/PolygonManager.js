@@ -9,5 +9,5 @@ var Class = function()
 module.exports = Class
 
 _.extend(Class.prototype, {
-	
+
 })

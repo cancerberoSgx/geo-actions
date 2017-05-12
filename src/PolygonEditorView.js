@@ -13,14 +13,9 @@ module.exports = AbstractView.extend({
 	{
 		AbstractView.prototype.initialize(this, arguments)
 		this.points = []
+		this.polygonName = 'unamed1'
 	},
 
-	// getContext: function()
-	// {
-	// 	return {
-	// 		points: this.points
-	// 	}
-	// }
 	mark: function()
 	{
 		this.points.push({latitude: Math.random(), longitude: Math.random()})
@@ -28,12 +23,9 @@ module.exports = AbstractView.extend({
 		this.render()
 		console.log(this.points.length)
 	},
-	// getContext: function()
-	// {
-	// 	return {points: this.points}
-	// },
-	// getContext: function()
-	// {
-	// 	return this
-	// }
+
+	save: function()
+	{
+		console.log(this.$('.polygon-name').value())
+	}
 })

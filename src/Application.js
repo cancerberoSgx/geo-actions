@@ -3,6 +3,8 @@ var jQuery = require('jquery')
 var Backbone = require('backbone')
 var Router = require('./Router')
 
+var PositionManager = require('./PositionManager')
+
 var Application = function(data)
 {	
 };
@@ -24,6 +26,9 @@ _(Application.prototype).extend({
 
 		// var navigateTo = Backbone.history.getHash() || 'index'; 
 		// Backbone.history.navigate(navigateTo, {trigger: true});
+
+		this.positionManager = new PositionManager()
+		this.positionManager.startWatching()
 	}
 
 ,	showView: function(view)

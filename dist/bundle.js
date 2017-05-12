@@ -13754,11 +13754,13 @@ module.exports = Backbone.View.extend({
 		return this
 	}
 })
-},{"./templates":9,"backbone":1,"jquery":2,"underscore":3}],5:[function(require,module,exports){
+},{"./templates":10,"backbone":1,"jquery":2,"underscore":3}],5:[function(require,module,exports){
 var _ = require('underscore')
 var jQuery = require('jquery')
 var Backbone = require('backbone')
 var Router = require('./Router')
+
+var PositionManager = require('./PositionManager')
 
 var Application = function(data)
 {	
@@ -13781,6 +13783,9 @@ _(Application.prototype).extend({
 
 		// var navigateTo = Backbone.history.getHash() || 'index'; 
 		// Backbone.history.navigate(navigateTo, {trigger: true});
+
+		this.positionManager = new PositionManager()
+		this.positionManager.startWatching()
 	}
 
 ,	showView: function(view)
@@ -13805,7 +13810,7 @@ _(Application.prototype).extend({
 });
 
 module.exports = Application
-},{"./Router":7,"backbone":1,"jquery":2,"underscore":3}],6:[function(require,module,exports){
+},{"./PositionManager":7,"./Router":8,"backbone":1,"jquery":2,"underscore":3}],6:[function(require,module,exports){
 var AbstractView = require('./AbstractView')
 
 module.exports = AbstractView.extend({
@@ -13821,14 +13826,9 @@ module.exports = AbstractView.extend({
 	{
 		AbstractView.prototype.initialize(this, arguments)
 		this.points = []
+		this.polygonName = 'unamed1'
 	},
 
-	// getContext: function()
-	// {
-	// 	return {
-	// 		points: this.points
-	// 	}
-	// }
 	mark: function()
 	{
 		this.points.push({latitude: Math.random(), longitude: Math.random()})
@@ -13836,16 +13836,65 @@ module.exports = AbstractView.extend({
 		this.render()
 		console.log(this.points.length)
 	},
-	// getContext: function()
-	// {
-	// 	return {points: this.points}
-	// },
-	// getContext: function()
-	// {
-	// 	return this
-	// }
+
+	save: function()
+	{
+		console.log(this.$('.polygon-name').value())
+	}
 })
 },{"./AbstractView":4}],7:[function(require,module,exports){
+/*
+I'm a store for named places - given a point I'm able to tell which place it belong.
+*/
+var _ = require('underscore')
+var Backbone = require('backbone')
+
+var Class = function()
+{
+}
+
+module.exports = Class
+
+_.extend(Class.prototype, Backbone.Events)
+
+_.extend(Class.prototype, {
+
+	startWatching: function()
+	{
+		var self = this
+		function success(pos) 
+		{
+			// debugger;
+			self.currentPosition = pos.coords
+			console.log(pos.coords)
+			self.trigger('change')
+		};
+
+		function error(err) 
+		{
+			console.warn('ERROR(' + err.code + '): ' + err.message);
+		};
+
+		var options = {
+			enableHighAccuracy: true,
+			timeout: 3000,
+			maximumAge: 0
+		};
+
+		this.watchError = navigator.geolocation.watchPosition(success, error, options);
+	},
+
+	stopWatching: function()
+	{
+		navigator.geolocation.clearWatch(this.watchError);
+	},
+
+	getCurrentPosition: function()
+	{
+		return this.currentPosition
+	}
+})
+},{"backbone":1,"underscore":3}],8:[function(require,module,exports){
 var Backbone = require('backbone')
 var _ = require('underscore')
 
@@ -13909,7 +13958,7 @@ module.exports = Backbone.Router.extend({
 })
 
 
-},{"./PolygonEditorView":6,"backbone":1,"underscore":3}],8:[function(require,module,exports){
+},{"./PolygonEditorView":6,"backbone":1,"underscore":3}],9:[function(require,module,exports){
 var Backbone = require('backbone')
 var _ = require('underscore')
 
@@ -13931,7 +13980,7 @@ app.start()
 // view1.$el = document.body
 // view1.render()
 
-},{"./Application":5,"backbone":1,"underscore":3}],9:[function(require,module,exports){
+},{"./Application":5,"backbone":1,"underscore":3}],10:[function(require,module,exports){
 (function (Buffer){
 
 var _ = require('underscore')
@@ -13943,12 +13992,12 @@ var templates = [
 	},
 	{
 		name: 'polygon-editor.html', 
-		content: Buffer("PGJ1dHRvbiBjbGFzcz0ibWFyayI+bWFyayE8L2J1dHRvbj4KCjwlCmlmKHBvaW50cyAmJiBwb2ludHMubGVuZ3RoKSB7JT4KCTxoND5Qb2ludHM8L2g0Pgo8dWw+CjwlIF8uZWFjaChwb2ludHMsIGZ1bmN0aW9uKHApeyAlPgoJPGxpPig8JT0gcC5sb25naXR1ZGUrJywgJytwLmxhdGl0dWRlJT4pPC9saT4KPCUgfSkgJT4KPC91bD4KCjwlfSU+","base64").toString()
+		content: Buffer("PGRsPgogIDxkdD5Qb2x5Z29uIG5hbWU6PC9kdD4KICA8ZGQ+PGlucHV0IHR5cGU9InRleHQiIGNsYXNzPSJwb2x5Z29uLW5hbWUiIHZhbHVlPSI8JT0gcG9seWdvbk5hbWUgJT4iPjwvZGQ+CjwvZGw+Cgo8YnV0dG9uIGNsYXNzPSJtYXJrIj5tYXJrITwvYnV0dG9uPgoKPCUKaWYocG9pbnRzICYmIHBvaW50cy5sZW5ndGgpIHslPgoJPGg0PlBvaW50czwvaDQ+Cjx1bD4KPCUgXy5lYWNoKHBvaW50cywgZnVuY3Rpb24ocCl7ICU+Cgk8bGk+KDwlPSBwLmxvbmdpdHVkZSsnLCAnK3AubGF0aXR1ZGUlPik8L2xpPgo8JSB9KSAlPgo8L3VsPgoKPCV9JT4=","base64").toString()
 	},
 
 	{
 		name: 'current-position.html', 
-		content: Buffer("Y3VycmVudC1wb3NpdGlvbi5odG1s","base64").toString()
+		content: Buffer("Y3VycmVudC1wb3NpdGlvbi5odG1sCgpsYXRpdHVkZTogPCU9IHRoaXMubW9kZWwuZ2V0KCdsYXRpdHVkZScpJT4=","base64").toString()
 	}
 ]
 
@@ -13966,7 +14015,7 @@ module.exports = function getTemplate(name)
 
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":11,"path":14,"underscore":3}],10:[function(require,module,exports){
+},{"buffer":12,"path":15,"underscore":3}],11:[function(require,module,exports){
 'use strict'
 
 exports.byteLength = byteLength
@@ -14082,7 +14131,7 @@ function fromByteArray (uint8) {
   return parts.join('')
 }
 
-},{}],11:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 (function (global){
 /*!
  * The buffer module from node.js, for the browser.
@@ -15875,7 +15924,7 @@ function isnan (val) {
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"base64-js":10,"ieee754":12,"isarray":13}],12:[function(require,module,exports){
+},{"base64-js":11,"ieee754":13,"isarray":14}],13:[function(require,module,exports){
 exports.read = function (buffer, offset, isLE, mLen, nBytes) {
   var e, m
   var eLen = nBytes * 8 - mLen - 1
@@ -15961,14 +16010,14 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
   buffer[offset + i - d] |= s * 128
 }
 
-},{}],13:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 var toString = {}.toString;
 
 module.exports = Array.isArray || function (arr) {
   return toString.call(arr) == '[object Array]';
 };
 
-},{}],14:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 (function (process){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -16196,7 +16245,7 @@ var substr = 'ab'.substr(-1) === 'b'
 ;
 
 }).call(this,require('_process'))
-},{"_process":15}],15:[function(require,module,exports){
+},{"_process":16}],16:[function(require,module,exports){
 // shim for using process in browser
 var process = module.exports = {};
 
@@ -16378,4 +16427,4 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}]},{},[8]);
+},{}]},{},[9]);
