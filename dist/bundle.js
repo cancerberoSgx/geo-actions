@@ -13754,7 +13754,7 @@ module.exports = Backbone.View.extend({
 		return this
 	}
 })
-},{"./templates":11,"backbone":1,"jquery":2,"underscore":3}],5:[function(require,module,exports){
+},{"./templates":12,"backbone":1,"jquery":2,"underscore":3}],5:[function(require,module,exports){
 var _ = require('underscore')
 var jQuery = require('jquery')
 var Backbone = require('backbone')
@@ -13773,10 +13773,10 @@ _(Application.prototype).extend({
 		// jQuery('body').size()
 		if(jQuery('#mainContainer').length===0)
 		{
-			jQuery('body').append('<a href="https://github.com/cancerberoSgx/geo-actions">github project</a><div id="mainContainer"></div>'); 
+			jQuery('body').append('<div id="mainContainer"></div>'); 
 		}
 		this.$containerEl = jQuery('#mainContainer'); 
-		this.$body = jQuery('.main-view-container');
+		// this.$body = jQuery('.main-view-container');
 
 		this.positionManager = new PositionManager()
 		this.positionManager.startWatching()
@@ -13812,7 +13812,7 @@ _(Application.prototype).extend({
 });
 
 module.exports = Application
-},{"./PositionManager":8,"./Router":9,"backbone":1,"jquery":2,"underscore":3}],6:[function(require,module,exports){
+},{"./PositionManager":9,"./Router":10,"backbone":1,"jquery":2,"underscore":3}],6:[function(require,module,exports){
 var AbstractView = require('./AbstractView')
 var Backbone = require('backbone')
 var _ = require('underscore')
@@ -13848,6 +13848,41 @@ module.exports = AbstractView.extend({
 	// }
 })
 },{"./AbstractView":4,"backbone":1,"underscore":3}],7:[function(require,module,exports){
+var AbstractView = require('./AbstractView')
+var Backbone = require('backbone')
+var _ = require('underscore')
+
+module.exports = AbstractView.extend({
+
+	// initialize: function(application)
+	// {
+	// 	var self = this
+	// 	// AbstractView.prototype.initialize(self, arguments)
+	// 	self.application = application
+	// 	self.model = new Backbone.Model()
+	// 	self.model.on('change', function()
+	// 	{
+	// 		self.render()
+	// 	})
+	// 	self.application.positionManager.on('change', function()
+	// 	{
+	// 		var pos = self.application.positionManager.getCurrentPosition()
+	// 		debugger;
+	// 		self.model.set('latitude', pos.latitude)
+	// 	})
+	// },
+
+	template: 'home.html'
+	// ,
+
+	// getContext: function()
+	// {
+	// 	return {
+	// 		model: model
+	// 	}
+	// }
+})
+},{"./AbstractView":4,"backbone":1,"underscore":3}],8:[function(require,module,exports){
 var AbstractView = require('./AbstractView')
 var Backbone = require('backbone')
 var _ = require('underscore')
@@ -13891,7 +13926,7 @@ module.exports = AbstractView.extend({
 		console.log(this.$('.polygon-name').value())
 	}
 })
-},{"./AbstractView":4,"backbone":1,"underscore":3}],8:[function(require,module,exports){
+},{"./AbstractView":4,"backbone":1,"underscore":3}],9:[function(require,module,exports){
 /*
 I'm a store for named places - given a point I'm able to tell which place it belong.
 */
@@ -13945,7 +13980,7 @@ _.extend(Class.prototype, {
 
 module.exports = Class
 
-},{"backbone":1,"underscore":3}],9:[function(require,module,exports){
+},{"backbone":1,"underscore":3}],10:[function(require,module,exports){
 var Backbone = require('backbone')
 var _ = require('underscore')
 
@@ -13953,7 +13988,8 @@ module.exports = Backbone.Router.extend({
 
 	routes: {
 		'polygonEditor': 'polygonEditor',
-		'currentPosition': 'currentPosition'
+		'currentPosition': 'currentPosition',
+		'': 'home'
 	}
 
 ,	initialize: function(application) 
@@ -13986,24 +14022,32 @@ module.exports = Backbone.Router.extend({
 		var CurrentPositionView = require('./CurrentPositionView')
 		var view = new CurrentPositionView(this.application)
 		this.showView(view)
-	}
-,	parseOptions: function(options)
+	},
+	home: function()
 	{
-		var params = {}
-		_(options.split('&')).each(function(p)
-		{
-			var a = p.split('=') 
-			if (a.length >= 2)
-			{
-				params[a[0]] = a[1] 
-			}
-		}) 
-		return params
+		var HomeView = require('./HomeView')
+		var view = new HomeView(this.application)
+		this.showView(view)
 	}
+
+// ,	parseOptions: function(options)
+// 	{
+// 		var params = {}
+// 		_(options.split('&')).each(function(p)
+// 		{
+// 			var a = p.split('=') 
+// 			if (a.length >= 2)
+// 			{
+// 				params[a[0]] = a[1] 
+// 			}
+// 		}) 
+// 		return params
+// 	}
+
 })
 
 
-},{"./CurrentPositionView":6,"./PolygonEditorView":7,"backbone":1,"underscore":3}],10:[function(require,module,exports){
+},{"./CurrentPositionView":6,"./HomeView":7,"./PolygonEditorView":8,"backbone":1,"underscore":3}],11:[function(require,module,exports){
 var Backbone = require('backbone')
 var _ = require('underscore')
 
@@ -14025,7 +14069,7 @@ app.start()
 // view1.$el = document.body
 // view1.render()
 
-},{"./Application":5,"backbone":1,"underscore":3}],11:[function(require,module,exports){
+},{"./Application":5,"backbone":1,"underscore":3}],12:[function(require,module,exports){
 (function (Buffer){
 
 var _ = require('underscore')
@@ -14037,12 +14081,17 @@ var templates = [
 	},
 	{
 		name: 'polygon-editor.html', 
-		content: Buffer("PGRsPgogIDxkdD5Qb2x5Z29uIG5hbWU6PC9kdD4KICA8ZGQ+PGlucHV0IHR5cGU9InRleHQiIGNsYXNzPSJwb2x5Z29uLW5hbWUiIHZhbHVlPSI8JT0gcG9seWdvbk5hbWUgJT4iPjwvZGQ+CjwvZGw+Cgo8YnV0dG9uIGNsYXNzPSJtYXJrIj5tYXJrITwvYnV0dG9uPgoKPCUKdmFyIHBvaW50cyA9IG1vZGVsLmdldCgncG9pbnRzJykKaWYocG9pbnRzICYmIHBvaW50cy5sZW5ndGgpIHslPgoJPGg0PlBvaW50czwvaDQ+Cjx1bD4KPCUgXy5lYWNoKHBvaW50cywgZnVuY3Rpb24ocCl7ICU+Cgk8bGk+KDwlPSBwLmxvbmdpdHVkZSsnLCAnK3AubGF0aXR1ZGUlPik8L2xpPgo8JSB9KSAlPgo8L3VsPgoKPCV9JT4=","base64").toString()
+		content: Buffer("UG9seWdvbiBuYW1lOiA8aW5wdXQgdHlwZT0idGV4dCIgY2xhc3M9InBvbHlnb24tbmFtZSIgdmFsdWU9IjwlPSBwb2x5Z29uTmFtZSAlPiI+Cgo8YnV0dG9uIGNsYXNzPSJtYXJrIj5tYXJrITwvYnV0dG9uPgoKPCUKdmFyIHBvaW50cyA9IG1vZGVsLmdldCgncG9pbnRzJykKaWYocG9pbnRzICYmIHBvaW50cy5sZW5ndGgpIHslPgoJPGg0PlBvaW50czwvaDQ+Cjx1bD4KPCUgXy5lYWNoKHBvaW50cywgZnVuY3Rpb24ocCl7ICU+Cgk8bGk+KDwlPSBwLmxvbmdpdHVkZSsnLCAnK3AubGF0aXR1ZGUlPik8L2xpPgo8JSB9KSAlPgo8L3VsPgoKPCV9JT4=","base64").toString()
 	},
 
 	{
 		name: 'current-position.html', 
 		content: Buffer("Y3VycmVudC1wb3NpdGlvbi5odG1sCgpsYXRpdHVkZTogPCU9IG1vZGVsLmdldCgnbGF0aXR1ZGUnKSU+","base64").toString()
+	},
+
+	{
+		name: 'home.html', 
+		content: Buffer("CldlbGNvbWUgdG8gZ2VvLWFjdGlvbnM6Cjx1bD4KCTxsaT48YSBocmVmPSJodHRwczovL2dpdGh1Yi5jb20vY2FuY2VyYmVyb1NneC9nZW8tYWN0aW9ucyI+Z2l0aHViIHByb2plY3Q8L2E+PC9saT4KCTxsaT48YSBocmVmPSIjcG9seWdvbkVkaXRvciI+UG9seWdvbiBlZGl0b3I8L2E+PC9saT4KCgk8bGk+PGEgaHJlZj0iaW5kZXhfb2xkMi5odG1sIj50cmFja2VyIGV4YW1wbGU8L2E+PC9saT4KPC91bD4=","base64").toString()
 	}
 ]
 
@@ -14060,7 +14109,123 @@ module.exports = function getTemplate(name)
 
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":12,"path":16,"underscore":3}],12:[function(require,module,exports){
+},{"buffer":14,"path":17,"underscore":3}],13:[function(require,module,exports){
+'use strict'
+
+exports.byteLength = byteLength
+exports.toByteArray = toByteArray
+exports.fromByteArray = fromByteArray
+
+var lookup = []
+var revLookup = []
+var Arr = typeof Uint8Array !== 'undefined' ? Uint8Array : Array
+
+var code = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
+for (var i = 0, len = code.length; i < len; ++i) {
+  lookup[i] = code[i]
+  revLookup[code.charCodeAt(i)] = i
+}
+
+revLookup['-'.charCodeAt(0)] = 62
+revLookup['_'.charCodeAt(0)] = 63
+
+function placeHoldersCount (b64) {
+  var len = b64.length
+  if (len % 4 > 0) {
+    throw new Error('Invalid string. Length must be a multiple of 4')
+  }
+
+  // the number of equal signs (place holders)
+  // if there are two placeholders, than the two characters before it
+  // represent one byte
+  // if there is only one, then the three characters before it represent 2 bytes
+  // this is just a cheap hack to not do indexOf twice
+  return b64[len - 2] === '=' ? 2 : b64[len - 1] === '=' ? 1 : 0
+}
+
+function byteLength (b64) {
+  // base64 is 4/3 + up to two characters of the original data
+  return b64.length * 3 / 4 - placeHoldersCount(b64)
+}
+
+function toByteArray (b64) {
+  var i, j, l, tmp, placeHolders, arr
+  var len = b64.length
+  placeHolders = placeHoldersCount(b64)
+
+  arr = new Arr(len * 3 / 4 - placeHolders)
+
+  // if there are placeholders, only get up to the last complete 4 chars
+  l = placeHolders > 0 ? len - 4 : len
+
+  var L = 0
+
+  for (i = 0, j = 0; i < l; i += 4, j += 3) {
+    tmp = (revLookup[b64.charCodeAt(i)] << 18) | (revLookup[b64.charCodeAt(i + 1)] << 12) | (revLookup[b64.charCodeAt(i + 2)] << 6) | revLookup[b64.charCodeAt(i + 3)]
+    arr[L++] = (tmp >> 16) & 0xFF
+    arr[L++] = (tmp >> 8) & 0xFF
+    arr[L++] = tmp & 0xFF
+  }
+
+  if (placeHolders === 2) {
+    tmp = (revLookup[b64.charCodeAt(i)] << 2) | (revLookup[b64.charCodeAt(i + 1)] >> 4)
+    arr[L++] = tmp & 0xFF
+  } else if (placeHolders === 1) {
+    tmp = (revLookup[b64.charCodeAt(i)] << 10) | (revLookup[b64.charCodeAt(i + 1)] << 4) | (revLookup[b64.charCodeAt(i + 2)] >> 2)
+    arr[L++] = (tmp >> 8) & 0xFF
+    arr[L++] = tmp & 0xFF
+  }
+
+  return arr
+}
+
+function tripletToBase64 (num) {
+  return lookup[num >> 18 & 0x3F] + lookup[num >> 12 & 0x3F] + lookup[num >> 6 & 0x3F] + lookup[num & 0x3F]
+}
+
+function encodeChunk (uint8, start, end) {
+  var tmp
+  var output = []
+  for (var i = start; i < end; i += 3) {
+    tmp = (uint8[i] << 16) + (uint8[i + 1] << 8) + (uint8[i + 2])
+    output.push(tripletToBase64(tmp))
+  }
+  return output.join('')
+}
+
+function fromByteArray (uint8) {
+  var tmp
+  var len = uint8.length
+  var extraBytes = len % 3 // if we have 1 byte left, pad 2 bytes
+  var output = ''
+  var parts = []
+  var maxChunkLength = 16383 // must be multiple of 3
+
+  // go through the array every three bytes, we'll deal with trailing stuff later
+  for (var i = 0, len2 = len - extraBytes; i < len2; i += maxChunkLength) {
+    parts.push(encodeChunk(uint8, i, (i + maxChunkLength) > len2 ? len2 : (i + maxChunkLength)))
+  }
+
+  // pad the end with zeros, but make sure to not forget the extra bytes
+  if (extraBytes === 1) {
+    tmp = uint8[len - 1]
+    output += lookup[tmp >> 2]
+    output += lookup[(tmp << 4) & 0x3F]
+    output += '=='
+  } else if (extraBytes === 2) {
+    tmp = (uint8[len - 2] << 8) + (uint8[len - 1])
+    output += lookup[tmp >> 10]
+    output += lookup[(tmp >> 4) & 0x3F]
+    output += lookup[(tmp << 2) & 0x3F]
+    output += '='
+  }
+
+  parts.push(output)
+
+  return parts.join('')
+}
+
+},{}],14:[function(require,module,exports){
 (function (global){
 /*!
  * The buffer module from node.js, for the browser.
@@ -14229,6 +14394,8 @@ if (Buffer.TYPED_ARRAY_SUPPORT) {
 function assertSize (size) {
   if (typeof size !== 'number') {
     throw new TypeError('"size" argument must be a number')
+  } else if (size < 0) {
+    throw new RangeError('"size" argument must not be negative')
   }
 }
 
@@ -14305,7 +14472,7 @@ function fromString (that, string, encoding) {
 }
 
 function fromArrayLike (that, array) {
-  var length = checked(array.length) | 0
+  var length = array.length < 0 ? 0 : checked(array.length) | 0
   that = createBuffer(that, length)
   for (var i = 0; i < length; i += 1) {
     that[i] = array[i] & 255
@@ -14374,7 +14541,7 @@ function fromObject (that, obj) {
 }
 
 function checked (length) {
-  // Note: cannot use `length < kMaxLength` here because that fails when
+  // Note: cannot use `length < kMaxLength()` here because that fails when
   // length is NaN (which is otherwise coerced to zero.)
   if (length >= kMaxLength()) {
     throw new RangeError('Attempt to allocate Buffer larger than maximum ' +
@@ -15851,118 +16018,7 @@ function isnan (val) {
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"base64-js":13,"ieee754":14,"isarray":15}],13:[function(require,module,exports){
-'use strict'
-
-exports.toByteArray = toByteArray
-exports.fromByteArray = fromByteArray
-
-var lookup = []
-var revLookup = []
-var Arr = typeof Uint8Array !== 'undefined' ? Uint8Array : Array
-
-function init () {
-  var code = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
-  for (var i = 0, len = code.length; i < len; ++i) {
-    lookup[i] = code[i]
-    revLookup[code.charCodeAt(i)] = i
-  }
-
-  revLookup['-'.charCodeAt(0)] = 62
-  revLookup['_'.charCodeAt(0)] = 63
-}
-
-init()
-
-function toByteArray (b64) {
-  var i, j, l, tmp, placeHolders, arr
-  var len = b64.length
-
-  if (len % 4 > 0) {
-    throw new Error('Invalid string. Length must be a multiple of 4')
-  }
-
-  // the number of equal signs (place holders)
-  // if there are two placeholders, than the two characters before it
-  // represent one byte
-  // if there is only one, then the three characters before it represent 2 bytes
-  // this is just a cheap hack to not do indexOf twice
-  placeHolders = b64[len - 2] === '=' ? 2 : b64[len - 1] === '=' ? 1 : 0
-
-  // base64 is 4/3 + up to two characters of the original data
-  arr = new Arr(len * 3 / 4 - placeHolders)
-
-  // if there are placeholders, only get up to the last complete 4 chars
-  l = placeHolders > 0 ? len - 4 : len
-
-  var L = 0
-
-  for (i = 0, j = 0; i < l; i += 4, j += 3) {
-    tmp = (revLookup[b64.charCodeAt(i)] << 18) | (revLookup[b64.charCodeAt(i + 1)] << 12) | (revLookup[b64.charCodeAt(i + 2)] << 6) | revLookup[b64.charCodeAt(i + 3)]
-    arr[L++] = (tmp >> 16) & 0xFF
-    arr[L++] = (tmp >> 8) & 0xFF
-    arr[L++] = tmp & 0xFF
-  }
-
-  if (placeHolders === 2) {
-    tmp = (revLookup[b64.charCodeAt(i)] << 2) | (revLookup[b64.charCodeAt(i + 1)] >> 4)
-    arr[L++] = tmp & 0xFF
-  } else if (placeHolders === 1) {
-    tmp = (revLookup[b64.charCodeAt(i)] << 10) | (revLookup[b64.charCodeAt(i + 1)] << 4) | (revLookup[b64.charCodeAt(i + 2)] >> 2)
-    arr[L++] = (tmp >> 8) & 0xFF
-    arr[L++] = tmp & 0xFF
-  }
-
-  return arr
-}
-
-function tripletToBase64 (num) {
-  return lookup[num >> 18 & 0x3F] + lookup[num >> 12 & 0x3F] + lookup[num >> 6 & 0x3F] + lookup[num & 0x3F]
-}
-
-function encodeChunk (uint8, start, end) {
-  var tmp
-  var output = []
-  for (var i = start; i < end; i += 3) {
-    tmp = (uint8[i] << 16) + (uint8[i + 1] << 8) + (uint8[i + 2])
-    output.push(tripletToBase64(tmp))
-  }
-  return output.join('')
-}
-
-function fromByteArray (uint8) {
-  var tmp
-  var len = uint8.length
-  var extraBytes = len % 3 // if we have 1 byte left, pad 2 bytes
-  var output = ''
-  var parts = []
-  var maxChunkLength = 16383 // must be multiple of 3
-
-  // go through the array every three bytes, we'll deal with trailing stuff later
-  for (var i = 0, len2 = len - extraBytes; i < len2; i += maxChunkLength) {
-    parts.push(encodeChunk(uint8, i, (i + maxChunkLength) > len2 ? len2 : (i + maxChunkLength)))
-  }
-
-  // pad the end with zeros, but make sure to not forget the extra bytes
-  if (extraBytes === 1) {
-    tmp = uint8[len - 1]
-    output += lookup[tmp >> 2]
-    output += lookup[(tmp << 4) & 0x3F]
-    output += '=='
-  } else if (extraBytes === 2) {
-    tmp = (uint8[len - 2] << 8) + (uint8[len - 1])
-    output += lookup[tmp >> 10]
-    output += lookup[(tmp >> 4) & 0x3F]
-    output += lookup[(tmp << 2) & 0x3F]
-    output += '='
-  }
-
-  parts.push(output)
-
-  return parts.join('')
-}
-
-},{}],14:[function(require,module,exports){
+},{"base64-js":13,"ieee754":15,"isarray":16}],15:[function(require,module,exports){
 exports.read = function (buffer, offset, isLE, mLen, nBytes) {
   var e, m
   var eLen = nBytes * 8 - mLen - 1
@@ -16048,14 +16104,14 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
   buffer[offset + i - d] |= s * 128
 }
 
-},{}],15:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 var toString = {}.toString;
 
 module.exports = Array.isArray || function (arr) {
   return toString.call(arr) == '[object Array]';
 };
 
-},{}],16:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 (function (process){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -16283,7 +16339,7 @@ var substr = 'ab'.substr(-1) === 'b'
 ;
 
 }).call(this,require('_process'))
-},{"_process":17}],17:[function(require,module,exports){
+},{"_process":18}],18:[function(require,module,exports){
 // shim for using process in browser
 var process = module.exports = {};
 
@@ -16295,25 +16351,40 @@ var process = module.exports = {};
 var cachedSetTimeout;
 var cachedClearTimeout;
 
+function defaultSetTimout() {
+    throw new Error('setTimeout has not been defined');
+}
+function defaultClearTimeout () {
+    throw new Error('clearTimeout has not been defined');
+}
 (function () {
     try {
-        cachedSetTimeout = setTimeout;
-    } catch (e) {
-        cachedSetTimeout = function () {
-            throw new Error('setTimeout is not defined');
+        if (typeof setTimeout === 'function') {
+            cachedSetTimeout = setTimeout;
+        } else {
+            cachedSetTimeout = defaultSetTimout;
         }
+    } catch (e) {
+        cachedSetTimeout = defaultSetTimout;
     }
     try {
-        cachedClearTimeout = clearTimeout;
-    } catch (e) {
-        cachedClearTimeout = function () {
-            throw new Error('clearTimeout is not defined');
+        if (typeof clearTimeout === 'function') {
+            cachedClearTimeout = clearTimeout;
+        } else {
+            cachedClearTimeout = defaultClearTimeout;
         }
+    } catch (e) {
+        cachedClearTimeout = defaultClearTimeout;
     }
 } ())
 function runTimeout(fun) {
     if (cachedSetTimeout === setTimeout) {
         //normal enviroments in sane situations
+        return setTimeout(fun, 0);
+    }
+    // if setTimeout wasn't available but was latter defined
+    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
+        cachedSetTimeout = setTimeout;
         return setTimeout(fun, 0);
     }
     try {
@@ -16334,6 +16405,11 @@ function runTimeout(fun) {
 function runClearTimeout(marker) {
     if (cachedClearTimeout === clearTimeout) {
         //normal enviroments in sane situations
+        return clearTimeout(marker);
+    }
+    // if clearTimeout wasn't available but was latter defined
+    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
+        cachedClearTimeout = clearTimeout;
         return clearTimeout(marker);
     }
     try {
@@ -16445,4 +16521,4 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}]},{},[10]);
+},{}]},{},[11]);

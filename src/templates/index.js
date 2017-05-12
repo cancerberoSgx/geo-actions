@@ -14,6 +14,11 @@ var templates = [
 	{
 		name: 'current-position.html', 
 		content: fs.readFileSync(path.join(__dirname, 'current-position.html')).toString()
+	},
+
+	{
+		name: 'home.html', 
+		content: fs.readFileSync(path.join(__dirname, 'home.html')).toString()
 	}
 ]
 

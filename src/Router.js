@@ -5,7 +5,8 @@ module.exports = Backbone.Router.extend({
 
 	routes: {
 		'polygonEditor': 'polygonEditor',
-		'currentPosition': 'currentPosition'
+		'currentPosition': 'currentPosition',
+		'': 'home'
 	}
 
 ,	initialize: function(application) 
@@ -38,19 +39,27 @@ module.exports = Backbone.Router.extend({
 		var CurrentPositionView = require('./CurrentPositionView')
 		var view = new CurrentPositionView(this.application)
 		this.showView(view)
-	}
-,	parseOptions: function(options)
+	},
+	home: function()
 	{
-		var params = {}
-		_(options.split('&')).each(function(p)
-		{
-			var a = p.split('=') 
-			if (a.length >= 2)
-			{
-				params[a[0]] = a[1] 
-			}
-		}) 
-		return params
+		var HomeView = require('./HomeView')
+		var view = new HomeView(this.application)
+		this.showView(view)
 	}
+
+// ,	parseOptions: function(options)
+// 	{
+// 		var params = {}
+// 		_(options.split('&')).each(function(p)
+// 		{
+// 			var a = p.split('=') 
+// 			if (a.length >= 2)
+// 			{
+// 				params[a[0]] = a[1] 
+// 			}
+// 		}) 
+// 		return params
+// 	}
+
 })
 
