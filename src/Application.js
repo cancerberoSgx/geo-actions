@@ -16,7 +16,7 @@ _(Application.prototype).extend({
 		// jQuery('body').size()
 		if(jQuery('#mainContainer').length===0)
 		{
-			jQuery('body').append('<div id="mainContainer"></div>'); 
+			jQuery('body').append('<a href="https://github.com/cancerberoSgx/geo-actions">github project</a><div id="mainContainer"></div>'); 
 		}
 		this.$containerEl = jQuery('#mainContainer'); 
 		this.$body = jQuery('.main-view-container');
