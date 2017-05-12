@@ -8,24 +8,37 @@
 <div id="demo"></div>
 <script>
 
-if(!navigator.geolocation || !navigator.geolocation.getCurrentPosition)
+var id, target, option;
+
+function success(pos) {
+  var crd = pos.coords;
+
+  document.getElementById('demo').innerHTML = 'Latitude: ' + crd.latitude + 
+    		'<br>Longitude: ' + crd.longitude; 
+  if (target.latitude === crd.latitude && target.longitude === crd.longitude) 
+  {
+    console.log('Congratulation, you reach the target');
+    navigator.geolocation.clearWatch(id);
+  }
+};
+
+function error(err) 
 {
-	document.getElementById('banner').innerHTML = 'Sorry your device doesn\'t support geo location! :('
-	// return
+  console.warn('ERROR(' + err.code + '): ' + err.message);
+};
+
+target = {
+  latitude : 0,
+  longitude: 0,
 }
-function doit()
-{
-	navigator.geolocation.getCurrentPosition(function(position)
-	{
-		document.getElementById('demo').innerHTML = 'Latitude: ' + position.coords.latitude + 
-    		'<br>Longitude: ' + position.coords.longitude; 
-	})
-}
-setTimeout(function()
-{
-	doit()
-}, 1000)
-doit()
+
+options = {
+  enableHighAccuracy: false,
+  timeout: 5000,
+  maximumAge: 0
+};
+
+id = navigator.geolocation.watchPosition(success, error, options);
 </script>
 </body>
 </html>

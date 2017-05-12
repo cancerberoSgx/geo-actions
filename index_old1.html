@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>geo actions test</title>
+</head>
+<body>
+<p id="banner">hello</p>
+<div id="demo"></div>
+<script>
+
+if(!navigator.geolocation || !navigator.geolocation.getCurrentPosition)
+{
+	document.getElementById('banner').innerHTML = 'Sorry your device doesn\'t support geo location! :('
+	// return
+}
+function doit()
+{
+	navigator.geolocation.getCurrentPosition(function(position)
+	{
+		document.getElementById('demo').innerHTML = 'Latitude: ' + position.coords.latitude + 
+    		'<br>Longitude: ' + position.coords.longitude; 
+	})
+}
+setTimeout(function()
+{
+	doit()
+}, 1000)
+doit()
+</script>
+</body>
+</html>
