@@ -57,8 +57,25 @@ _.extend(Class.prototype, {
 		return document
 	},
 
+	getDocumentList: function()
+	{
+		var model = new Backbone.Model()
+		model.set('documents', this.documents)
+		return model
+	},
+
 	exportToJson: function()
 	{
 		return JSON.stringify(this.documents)
+	},
+
+	importFromJson: function(jsonString)
+	{
+		var data = JSON.parse(jsonString)
+		this.documents = []
+		_.each(data, function(docData)
+		{
+
+		})
 	}
 })

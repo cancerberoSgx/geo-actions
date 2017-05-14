@@ -10,12 +10,12 @@ module.exports = AbstractView.extend({
 
 	template: 'document-list.html',
 
-	initialize: function(application)
+	initialize: function(application, model)
 	{
 		this.application = application
-		this.model = new Backbone.Model()
-		this.model.set('documents', [])
-		this.model.on('change',_.bind(this.render, this))
+		this.model = model || [] //new Backbone.Model()
+		// this.model.set('documents', [])
+		// this.model.on('change',_.bind(this.render, this))
 	},
 
 	new: function()

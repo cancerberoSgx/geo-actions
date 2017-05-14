@@ -4,7 +4,9 @@ var points = model.get('points') || []
 
 Polygon name: <input type="text" class="polygon-name" value="<%= model.get('name') %>">
 
-of document <%= model.get('documentName') %>
+of 
+
+<a href="#documentEditor?document=<%= model.get('documentName') %>">document <%= model.get('documentName') %></a>
 
 <br>
 <button class="mark">mark!</button>

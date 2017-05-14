@@ -66,11 +66,10 @@ module.exports = Backbone.Router.extend({
 	documentList: function()
 	{
 		var DocumentListView = require('./DocumentListView')
-		var view = new DocumentListView(this.application)
+		var model = this.application.polygonManager.getDocumentList()
+		var view = new DocumentListView(this.application, model)
 		this.showView(view)
 	},
-	
-
  	parseOptions: function(options)
 	{
 		var params = {}

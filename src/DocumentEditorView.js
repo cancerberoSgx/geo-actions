@@ -14,7 +14,7 @@ module.exports = AbstractView.extend({
 
 	initialize: function(application, model)
 	{
-		debugger;
+		// debugger;
 		this.application = application
 		this.model = model || new Backbone.Model()
 		// this.model.set('polygons', [])

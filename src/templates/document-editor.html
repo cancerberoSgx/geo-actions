@@ -1,16 +1,17 @@
 <% 
-var polygons = model.get('polygons')||[]
+var polygons = model.get('polygons') || []
 %>
 
 Document name: <input type="text" class="document-name" value="<%= model.get('name') %>">
 <br>
 <button class="newPolygon">New Polygon</button>
-<button class="save">Save</button>
+<!-- <button class="save">Save</button> -->
+<a href="#documentList">go to document list</a>
 
 	<h4>Polygons: (<%= polygons.length %>)</h4>
 
 <ul>
 <% _.each(polygons, function(p){ %>
-	<li>(<%= p.name %>)</li>
+	<li>(<%= p.get('name') %>)</li>
 <% }) %>
 </ul>

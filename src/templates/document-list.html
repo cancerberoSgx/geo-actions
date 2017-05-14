@@ -7,11 +7,8 @@ var docs = model.get('documents') || []
 
 <h4>Documents (<%= docs.length%>):</h4>
 
-<% if(docs.length) { %>
 <ul>
 <% _.each(docs, function(doc){ %>
-	<li>(<%= doc.longitude+', '+doc.latitude%>)</li>
+	<li>(<%= doc.get('name') %>) - (with <%= doc.get('polygons').length%> polygons) </li>
 <% }) %>
 </ul>
-
-<%}%>
