@@ -39,6 +39,10 @@ _(Application.prototype).extend({
 ,	showView: function(view)
 	{
 		// this.applicationView = this.applicationView || new ApplicationView(this); 
+		if(this.currentView)
+		{
+			this.currentView.undelegateEvents()
+		}
 		this.currentView = view;
 		this.$containerEl.empty();
 		view.$el = this.$containerEl

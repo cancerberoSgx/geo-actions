@@ -38,7 +38,7 @@ _.extend(Class.prototype, {
 
 		var options = {
 			enableHighAccuracy: true,
-			timeout: 3000,
+			timeout: 4000,
 			maximumAge: 0
 		}
 

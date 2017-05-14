@@ -14,7 +14,6 @@ module.exports = function getTemplate(name)
 	return t.compiled
 }
 
-
 var templates = [
 	{
 		name: 'application.html', 

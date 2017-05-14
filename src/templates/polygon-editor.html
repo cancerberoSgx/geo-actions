@@ -1,12 +1,19 @@
+<% 
+var points = model.get('points') || []
+%>
+
 Polygon name: <input type="text" class="polygon-name" value="<%= model.get('name') %>">
 
+of document <%= model.get('documentName') %>
+
+<br>
 <button class="mark">mark!</button>
 <button class="save">save</button>
 
-<%
-var points = model.get('points')
-if(points && points.length) {%>
-	<h4>Points</h4>
+
+	<h4>Points: (<%= points.length %>)</h4>
+
+<%if(points && points.length) {%>
 <ul>
 <% _.each(points, function(p){ %>
 	<li>(<%= p.longitude+', '+p.latitude%>)</li>

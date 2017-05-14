@@ -8,8 +8,11 @@ module.exports = Backbone.Router.extend({
 		'polygonEditor?:options': 'polygonEditor', 
 
 		'currentPosition': 'currentPosition',
+		
 		'documentList': 'documentList',
 		'documentEditor': 'documentEditor',
+		'documentEditor?:options': 'documentEditor', 
+
 		'': 'home'
 	},	
 	initialize: function(application) 
@@ -33,8 +36,19 @@ module.exports = Backbone.Router.extend({
 		options = options || '';
 		var params = this.parseOptions(options);	
 		var PolygonEditorView = require('./PolygonEditorView')
-		var model = this.application.polygonManager.get(params.document, params.polygon)
+		var model = this.application.polygonManager.getPolygon(params.document, params.polygon)
 		var view = new PolygonEditorView(this.application, model)
+		// debugger;
+		this.showView(view)
+	},
+	documentEditor: function(options)
+	{
+		options = options || '';
+		var params = this.parseOptions(options);	
+		var DocumentEditorView = require('./DocumentEditorView')
+		var model = this.application.polygonManager.getDocument(params.document)
+		var view = new DocumentEditorView(this.application, model)
+		// debugger;
 		this.showView(view)
 	},
 	currentPosition: function()
@@ -53,12 +67,6 @@ module.exports = Backbone.Router.extend({
 	{
 		var DocumentListView = require('./DocumentListView')
 		var view = new DocumentListView(this.application)
-		this.showView(view)
-	},
-	documentEditor: function()
-	{
-		var DocumentEditorView = require('./DocumentEditorView')
-		var view = new DocumentEditorView(this.application)
 		this.showView(view)
 	},
 	
