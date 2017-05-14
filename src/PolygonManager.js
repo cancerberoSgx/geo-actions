@@ -55,5 +55,10 @@ _.extend(Class.prototype, {
 			this.documents.push(document)
 		}
 		return document
+	},
+
+	exportToJson: function()
+	{
+		return JSON.stringify(this.documents)
 	}
 })
