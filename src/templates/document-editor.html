@@ -1,0 +1,16 @@
+Document name: <input type="text" class="document-name" value="<%= model.get('name') %>">
+
+<button class="newPolygon">New Polygon</button>
+<button class="save">Save</button>
+
+<%
+var polygons = model.get('polygons')
+if(polygons && polygons.length) {%>
+	<h4>polygons</h4>
+<ul>
+<% _.each(polygons, function(p){ %>
+	<li>(<%= p.name %>)</li>
+<% }) %>
+</ul>
+
+<%}%>

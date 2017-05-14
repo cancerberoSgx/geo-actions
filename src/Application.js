@@ -4,6 +4,8 @@ var Backbone = require('backbone')
 var Router = require('./Router')
 
 var PositionManager = require('./PositionManager')
+var PolygonManager = require('./PolygonManager')
+
 
 var Application = function(data)
 {	
@@ -23,6 +25,8 @@ _(Application.prototype).extend({
 
 		this.positionManager = new PositionManager()
 		this.positionManager.startWatching()
+
+		this.polygonManager = new PolygonManager()
 
 		this.router = new Router(this);
 		Backbone.history.start();

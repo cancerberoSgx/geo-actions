@@ -1,0 +1,17 @@
+<%
+var docs = model.get('documents') || []
+%>
+
+<a href="#documentEditor">New</a>
+
+
+<h4>Documents (<%= docs.length%>):</h4>
+
+<% if(docs.length) { %>
+<ul>
+<% _.each(docs, function(doc){ %>
+	<li>(<%= doc.longitude+', '+doc.latitude%>)</li>
+<% }) %>
+</ul>
+
+<%}%>

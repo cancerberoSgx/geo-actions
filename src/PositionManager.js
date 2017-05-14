@@ -13,33 +13,41 @@ _.extend(Class.prototype, Backbone.Events)
 _.extend(Class.prototype, {
 
 	startWatching: function()
-	{
+	{ 
 		var self = this
+
+		if(!navigator.geolocation || !navigator.geolocation.watchPosition)
+		{
+			alert('Your browser/device doesn\'t support geolocation, sorry!')
+		}
 		function success(pos) 
 		{
 			// debugger;
 			self.currentPosition = pos.coords
-			console.log(pos.coords)
+			// console.log(pos.coords)
 			self.trigger('change')
-		};
+			self.trigger('done')
+		}
 
 		function error(err) 
 		{
 			console.warn('ERROR(' + err.code + '): ' + err.message);
-		};
+			// alert('You must let your browser/device to track your position in order to use this application, sorry! Error: '+err.code+', '+err.message)
+			self.trigger('done')
+		}
 
 		var options = {
 			enableHighAccuracy: true,
 			timeout: 3000,
 			maximumAge: 0
-		};
+		}
 
-		this.watchError = navigator.geolocation.watchPosition(success, error, options);
+		this.watchError = navigator.geolocation.watchPosition(success, error, options)
 	},
 
 	stopWatching: function()
 	{
-		navigator.geolocation.clearWatch(this.watchError);
+		navigator.geolocation.clearWatch(this.watchError)
 	},
 
 	getCurrentPosition: function()

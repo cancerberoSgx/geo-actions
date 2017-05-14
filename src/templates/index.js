@@ -1,26 +1,6 @@
 var fs = require('fs')
 var _ = require('underscore')
 var path = require('path')
-var templates = [
-	{
-		name: 'application.html', 
-		content: fs.readFileSync(path.join(__dirname, 'application.html')).toString()
-	},
-	{
-		name: 'polygon-editor.html', 
-		content: fs.readFileSync(path.join(__dirname, 'polygon-editor.html')).toString()
-	},
-
-	{
-		name: 'current-position.html', 
-		content: fs.readFileSync(path.join(__dirname, 'current-position.html')).toString()
-	},
-
-	{
-		name: 'home.html', 
-		content: fs.readFileSync(path.join(__dirname, 'home.html')).toString()
-	}
-]
 
 module.exports = function getTemplate(name)
 {
@@ -34,3 +14,30 @@ module.exports = function getTemplate(name)
 	return t.compiled
 }
 
+
+var templates = [
+	{
+		name: 'application.html', 
+		content: fs.readFileSync(path.join(__dirname, 'application.html')).toString()
+	},
+	{
+		name: 'polygon-editor.html', 
+		content: fs.readFileSync(path.join(__dirname, 'polygon-editor.html')).toString()
+	},
+	{
+		name: 'current-position.html', 
+		content: fs.readFileSync(path.join(__dirname, 'current-position.html')).toString()
+	},
+	{
+		name: 'home.html', 
+		content: fs.readFileSync(path.join(__dirname, 'home.html')).toString()
+	},
+	{
+		name: 'document-list.html', 
+		content: fs.readFileSync(path.join(__dirname, 'document-list.html')).toString()
+	},
+	{
+		name: 'document-editor.html', 
+		content: fs.readFileSync(path.join(__dirname, 'document-editor.html')).toString()
+	}
+]

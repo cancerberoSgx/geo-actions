@@ -1,6 +1,7 @@
-Polygon name: <input type="text" class="polygon-name" value="<%= polygonName %>">
+Polygon name: <input type="text" class="polygon-name" value="<%= model.get('name') %>">
 
 <button class="mark">mark!</button>
+<button class="save">save</button>
 
 <%
 var points = model.get('points')

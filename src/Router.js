@@ -5,16 +5,18 @@ module.exports = Backbone.Router.extend({
 
 	routes: {
 		'polygonEditor': 'polygonEditor',
-		'currentPosition': 'currentPosition',
-		'': 'home'
-	}
+		'polygonEditor?:options': 'polygonEditor', 
 
-,	initialize: function(application) 
+		'currentPosition': 'currentPosition',
+		'documentList': 'documentList',
+		'documentEditor': 'documentEditor',
+		'': 'home'
+	},	
+	initialize: function(application) 
 	{
 		this.application = application
-	}
-
-,	showView: function(view, resourceName)
+	},	
+	showView: function(view, resourceName)
 	{
 		if(view.resourceNotFound)
 		{
@@ -25,16 +27,17 @@ module.exports = Backbone.Router.extend({
 		{
 			this.application.showView(view) 
 		}
-	}
-
-,	polygonEditor: function() 
+	},	
+	polygonEditor: function(options) 
 	{
+		options = options || '';
+		var params = this.parseOptions(options);	
 		var PolygonEditorView = require('./PolygonEditorView')
-		var view = new PolygonEditorView(this.application)
+		var model = this.application.polygonManager.get(params.document, params.polygon)
+		var view = new PolygonEditorView(this.application, model)
 		this.showView(view)
-	}
-
-	,currentPosition: function()
+	},
+	currentPosition: function()
 	{
 		var CurrentPositionView = require('./CurrentPositionView')
 		var view = new CurrentPositionView(this.application)
@@ -45,21 +48,34 @@ module.exports = Backbone.Router.extend({
 		var HomeView = require('./HomeView')
 		var view = new HomeView(this.application)
 		this.showView(view)
-	}
+	},
+	documentList: function()
+	{
+		var DocumentListView = require('./DocumentListView')
+		var view = new DocumentListView(this.application)
+		this.showView(view)
+	},
+	documentEditor: function()
+	{
+		var DocumentEditorView = require('./DocumentEditorView')
+		var view = new DocumentEditorView(this.application)
+		this.showView(view)
+	},
+	
 
-// ,	parseOptions: function(options)
-// 	{
-// 		var params = {}
-// 		_(options.split('&')).each(function(p)
-// 		{
-// 			var a = p.split('=') 
-// 			if (a.length >= 2)
-// 			{
-// 				params[a[0]] = a[1] 
-// 			}
-// 		}) 
-// 		return params
-// 	}
+ 	parseOptions: function(options)
+	{
+		var params = {}
+		_(options.split('&')).each(function(p)
+		{
+			var a = p.split('=') 
+			if (a.length >= 2)
+			{
+				params[a[0]] = a[1] 
+			}
+		}) 
+		return params
+	}
 
 })
 

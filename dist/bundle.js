@@ -13754,13 +13754,15 @@ module.exports = Backbone.View.extend({
 		return this
 	}
 })
-},{"./templates":12,"backbone":1,"jquery":2,"underscore":3}],5:[function(require,module,exports){
+},{"./templates":15,"backbone":1,"jquery":2,"underscore":3}],5:[function(require,module,exports){
 var _ = require('underscore')
 var jQuery = require('jquery')
 var Backbone = require('backbone')
 var Router = require('./Router')
 
 var PositionManager = require('./PositionManager')
+var PolygonManager = require('./PolygonManager')
+
 
 var Application = function(data)
 {	
@@ -13780,6 +13782,8 @@ _(Application.prototype).extend({
 
 		this.positionManager = new PositionManager()
 		this.positionManager.startWatching()
+
+		this.polygonManager = new PolygonManager()
 
 		this.router = new Router(this);
 		Backbone.history.start();
@@ -13812,7 +13816,7 @@ _(Application.prototype).extend({
 });
 
 module.exports = Application
-},{"./PositionManager":9,"./Router":10,"backbone":1,"jquery":2,"underscore":3}],6:[function(require,module,exports){
+},{"./PolygonManager":11,"./PositionManager":12,"./Router":13,"backbone":1,"jquery":2,"underscore":3}],6:[function(require,module,exports){
 var AbstractView = require('./AbstractView')
 var Backbone = require('backbone')
 var _ = require('underscore')
@@ -13854,6 +13858,78 @@ var _ = require('underscore')
 
 module.exports = AbstractView.extend({
 
+	events: {
+		'click .newPolygon': 'newPolygon',
+		'click .save': 'save'
+	},
+
+	template: 'document-editor.html',
+
+	initialize: function(application, model)
+	{
+		this.application = application
+		this.model = model || new Backbone.Model()
+		this.model.set('polygons', [])
+		this.model.set('name', 'unameDocument'+new Date().getTime())
+		this.model.on('change',_.bind(this.render, this))
+	},
+
+	newPolygon: function()
+	{
+		var name = unescape(this.$('.document-name').attr('value'))
+		if(!name)
+		{
+			alert('please add a name') 
+			this.$('.document-name').focus()
+			return
+		}
+		Backbone.history.navigate('polygonEditor?document='+escape(this.$('.document-name').attr('value')), {trigger: true})
+		// var currentPos = this.application.positionManager.getCurrentPosition()
+		// console.log(currentPos)
+		// var points = this.model.get('points')
+		// points.push(currentPos)
+		// this.model.set('name', new Date().getTime()+'')
+		// this.model.set('points', points)
+	},
+
+	save: function()
+	{
+		console.log(this.$('.document-name').value())
+	}
+})
+},{"./AbstractView":4,"backbone":1,"underscore":3}],8:[function(require,module,exports){
+var AbstractView = require('./AbstractView')
+var Backbone = require('backbone')
+var _ = require('underscore')
+
+module.exports = AbstractView.extend({
+
+	events: {
+		'click .new': 'new'
+	},
+
+	template: 'document-list.html',
+
+	initialize: function(application)
+	{
+		this.application = application
+		this.model = new Backbone.Model()
+		this.model.set('documents', [])
+		this.model.on('change',_.bind(this.render, this))
+	},
+
+	new: function()
+	{
+		Backbone.history.navigate('documentEditor', {trigger: true})
+	}
+})
+},{"./AbstractView":4,"backbone":1,"underscore":3}],9:[function(require,module,exports){
+var AbstractView = require('./AbstractView')
+var Backbone = require('backbone')
+var _ = require('underscore')
+
+module.exports = AbstractView.extend({
+
 	// initialize: function(application)
 	// {
 	// 	var self = this
@@ -13882,7 +13958,7 @@ module.exports = AbstractView.extend({
 	// 	}
 	// }
 })
-},{"./AbstractView":4,"backbone":1,"underscore":3}],8:[function(require,module,exports){
+},{"./AbstractView":4,"backbone":1,"underscore":3}],10:[function(require,module,exports){
 var AbstractView = require('./AbstractView')
 var Backbone = require('backbone')
 var _ = require('underscore')
@@ -13896,15 +13972,15 @@ module.exports = AbstractView.extend({
 
 	template: 'polygon-editor.html',
 
-	initialize: function(application)
+	initialize: function(application, model)
 	{
 		this.application = application
-		this.points = []
-		this.polygonName = 'unamed1'
-		this.model = new Backbone.Model()
+		// this.points = []
+		// this.polygonName = 'unamed1'
+		this.model = model || new Backbone.Model()
 		this.model.set('points', [])
-		this.model.set('name', '')
-		this.model.on('change',_.bind(this.render, this))
+		this.model.set('name', 'unamed - ' + new Date().getTime())
+		this.model.on('change', _.bind(this.render, this))
 	},
 
 	mark: function()
@@ -13913,7 +13989,6 @@ module.exports = AbstractView.extend({
 		console.log(currentPos)
 		var points = this.model.get('points')
 		points.push(currentPos)
-		this.model.set('name', new Date().getTime()+'')
 		this.model.set('points', points)
 		// this.points.push({latitude: currentPos.latitude, longitude: Math.random()})
 		// this.application.showView(this)
@@ -13926,7 +14001,38 @@ module.exports = AbstractView.extend({
 		console.log(this.$('.polygon-name').value())
 	}
 })
-},{"./AbstractView":4,"backbone":1,"underscore":3}],9:[function(require,module,exports){
+},{"./AbstractView":4,"backbone":1,"underscore":3}],11:[function(require,module,exports){
+/*
+I'm a store for named places - given a point I'm able to tell which place it belong.
+*/
+var _ = require('underscore')
+var Class = function()
+{
+	this.documents = [] // TODO: be able to load from fs / persist
+}
+ 
+module.exports = Class
+
+_.extend(Class.prototype, {
+
+	get: function(documentName, polygonName)
+	{
+		var document = _.find(this.documents, function(d)
+		{
+			return d.name==documentName
+		})
+		if(!document)
+		{
+			return null
+		}
+		return _.find(document.polygons, function(p)
+		{
+			return p.name == polygonName
+		})
+	}
+})
+
+},{"underscore":3}],12:[function(require,module,exports){
 /*
 I'm a store for named places - given a point I'm able to tell which place it belong.
 */
@@ -13942,33 +14048,41 @@ _.extend(Class.prototype, Backbone.Events)
 _.extend(Class.prototype, {
 
 	startWatching: function()
-	{
+	{ 
 		var self = this
+
+		if(!navigator.geolocation || !navigator.geolocation.watchPosition)
+		{
+			alert('Your browser/device doesn\'t support geolocation, sorry!')
+		}
 		function success(pos) 
 		{
 			// debugger;
 			self.currentPosition = pos.coords
-			console.log(pos.coords)
+			// console.log(pos.coords)
 			self.trigger('change')
-		};
+			self.trigger('done')
+		}
 
 		function error(err) 
 		{
 			console.warn('ERROR(' + err.code + '): ' + err.message);
-		};
+			// alert('You must let your browser/device to track your position in order to use this application, sorry! Error: '+err.code+', '+err.message)
+			self.trigger('done')
+		}
 
 		var options = {
 			enableHighAccuracy: true,
 			timeout: 3000,
 			maximumAge: 0
-		};
+		}
 
-		this.watchError = navigator.geolocation.watchPosition(success, error, options);
+		this.watchError = navigator.geolocation.watchPosition(success, error, options)
 	},
 
 	stopWatching: function()
 	{
-		navigator.geolocation.clearWatch(this.watchError);
+		navigator.geolocation.clearWatch(this.watchError)
 	},
 
 	getCurrentPosition: function()
@@ -13980,7 +14094,7 @@ _.extend(Class.prototype, {
 
 module.exports = Class
 
-},{"backbone":1,"underscore":3}],10:[function(require,module,exports){
+},{"backbone":1,"underscore":3}],13:[function(require,module,exports){
 var Backbone = require('backbone')
 var _ = require('underscore')
 
@@ -13988,16 +14102,18 @@ module.exports = Backbone.Router.extend({
 
 	routes: {
 		'polygonEditor': 'polygonEditor',
-		'currentPosition': 'currentPosition',
-		'': 'home'
-	}
+		'polygonEditor?:options': 'polygonEditor', 
 
-,	initialize: function(application) 
+		'currentPosition': 'currentPosition',
+		'documentList': 'documentList',
+		'documentEditor': 'documentEditor',
+		'': 'home'
+	},	
+	initialize: function(application) 
 	{
 		this.application = application
-	}
-
-,	showView: function(view, resourceName)
+	},	
+	showView: function(view, resourceName)
 	{
 		if(view.resourceNotFound)
 		{
@@ -14008,16 +14124,17 @@ module.exports = Backbone.Router.extend({
 		{
 			this.application.showView(view) 
 		}
-	}
-
-,	polygonEditor: function() 
+	},	
+	polygonEditor: function(options) 
 	{
+		options = options || '';
+		var params = this.parseOptions(options);	
 		var PolygonEditorView = require('./PolygonEditorView')
-		var view = new PolygonEditorView(this.application)
+		var model = this.application.polygonManager.get(params.document, params.polygon)
+		var view = new PolygonEditorView(this.application, model)
 		this.showView(view)
-	}
-
-	,currentPosition: function()
+	},
+	currentPosition: function()
 	{
 		var CurrentPositionView = require('./CurrentPositionView')
 		var view = new CurrentPositionView(this.application)
@@ -14028,26 +14145,39 @@ module.exports = Backbone.Router.extend({
 		var HomeView = require('./HomeView')
 		var view = new HomeView(this.application)
 		this.showView(view)
-	}
+	},
+	documentList: function()
+	{
+		var DocumentListView = require('./DocumentListView')
+		var view = new DocumentListView(this.application)
+		this.showView(view)
+	},
+	documentEditor: function()
+	{
+		var DocumentEditorView = require('./DocumentEditorView')
+		var view = new DocumentEditorView(this.application)
+		this.showView(view)
+	},
+	
 
-// ,	parseOptions: function(options)
-// 	{
-// 		var params = {}
-// 		_(options.split('&')).each(function(p)
-// 		{
-// 			var a = p.split('=') 
-// 			if (a.length >= 2)
-// 			{
-// 				params[a[0]] = a[1] 
-// 			}
-// 		}) 
-// 		return params
-// 	}
+ 	parseOptions: function(options)
+	{
+		var params = {}
+		_(options.split('&')).each(function(p)
+		{
+			var a = p.split('=') 
+			if (a.length >= 2)
+			{
+				params[a[0]] = a[1] 
+			}
+		}) 
+		return params
+	}
 
 })
 
 
-},{"./CurrentPositionView":6,"./HomeView":7,"./PolygonEditorView":8,"backbone":1,"underscore":3}],11:[function(require,module,exports){
+},{"./CurrentPositionView":6,"./DocumentEditorView":7,"./DocumentListView":8,"./HomeView":9,"./PolygonEditorView":10,"backbone":1,"underscore":3}],14:[function(require,module,exports){
 var Backbone = require('backbone')
 var _ = require('underscore')
 
@@ -14069,31 +14199,11 @@ app.start()
 // view1.$el = document.body
 // view1.render()
 
-},{"./Application":5,"backbone":1,"underscore":3}],12:[function(require,module,exports){
+},{"./Application":5,"backbone":1,"underscore":3}],15:[function(require,module,exports){
 (function (Buffer){
 
 var _ = require('underscore')
 var path = require('path')
-var templates = [
-	{
-		name: 'application.html', 
-		content: Buffer("PGRpdj4KdGhpcyBpcyB0aGUgYXBwCjwvZGl2Pg==","base64").toString()
-	},
-	{
-		name: 'polygon-editor.html', 
-		content: Buffer("UG9seWdvbiBuYW1lOiA8aW5wdXQgdHlwZT0idGV4dCIgY2xhc3M9InBvbHlnb24tbmFtZSIgdmFsdWU9IjwlPSBwb2x5Z29uTmFtZSAlPiI+Cgo8YnV0dG9uIGNsYXNzPSJtYXJrIj5tYXJrITwvYnV0dG9uPgoKPCUKdmFyIHBvaW50cyA9IG1vZGVsLmdldCgncG9pbnRzJykKaWYocG9pbnRzICYmIHBvaW50cy5sZW5ndGgpIHslPgoJPGg0PlBvaW50czwvaDQ+Cjx1bD4KPCUgXy5lYWNoKHBvaW50cywgZnVuY3Rpb24ocCl7ICU+Cgk8bGk+KDwlPSBwLmxvbmdpdHVkZSsnLCAnK3AubGF0aXR1ZGUlPik8L2xpPgo8JSB9KSAlPgo8L3VsPgoKPCV9JT4=","base64").toString()
-	},
-
-	{
-		name: 'current-position.html', 
-		content: Buffer("Y3VycmVudC1wb3NpdGlvbi5odG1sCgpsYXRpdHVkZTogPCU9IG1vZGVsLmdldCgnbGF0aXR1ZGUnKSU+","base64").toString()
-	},
-
-	{
-		name: 'home.html', 
-		content: Buffer("CldlbGNvbWUgdG8gZ2VvLWFjdGlvbnM6Cjx1bD4KCTxsaT48YSBocmVmPSJodHRwczovL2dpdGh1Yi5jb20vY2FuY2VyYmVyb1NneC9nZW8tYWN0aW9ucyI+Z2l0aHViIHByb2plY3Q8L2E+PC9saT4KCTxsaT48YSBocmVmPSIjcG9seWdvbkVkaXRvciI+UG9seWdvbiBlZGl0b3I8L2E+PC9saT4KCgk8bGk+PGEgaHJlZj0iaW5kZXhfb2xkMi5odG1sIj50cmFja2VyIGV4YW1wbGU8L2E+PC9saT4KPC91bD4=","base64").toString()
-	}
-]
 
 module.exports = function getTemplate(name)
 {
@@ -14108,124 +14218,34 @@ module.exports = function getTemplate(name)
 }
 
 
+var templates = [
+	{
+		name: 'application.html', 
+		content: Buffer("CnRoaXMgaXMgdGhlIGFwcAoKPGRpdiBjbGFzcz0iY29udGFpbmVyLWZsdWlkIGFwcGxpY2F0aW9uIj4KPGRpdj48L2Rpdj4KPC9kaXY+Cgo8IS0tIDxkaXY+CnRoaXMgaXMgdGhlIGFwcAo8L2Rpdj4gLS0+","base64").toString()
+	},
+	{
+		name: 'polygon-editor.html', 
+		content: Buffer("UG9seWdvbiBuYW1lOiA8aW5wdXQgdHlwZT0idGV4dCIgY2xhc3M9InBvbHlnb24tbmFtZSIgdmFsdWU9IjwlPSBtb2RlbC5nZXQoJ25hbWUnKSAlPiI+Cgo8YnV0dG9uIGNsYXNzPSJtYXJrIj5tYXJrITwvYnV0dG9uPgo8YnV0dG9uIGNsYXNzPSJzYXZlIj5zYXZlPC9idXR0b24+Cgo8JQp2YXIgcG9pbnRzID0gbW9kZWwuZ2V0KCdwb2ludHMnKQppZihwb2ludHMgJiYgcG9pbnRzLmxlbmd0aCkgeyU+Cgk8aDQ+UG9pbnRzPC9oND4KPHVsPgo8JSBfLmVhY2gocG9pbnRzLCBmdW5jdGlvbihwKXsgJT4KCTxsaT4oPCU9IHAubG9uZ2l0dWRlKycsICcrcC5sYXRpdHVkZSU+KTwvbGk+CjwlIH0pICU+CjwvdWw+Cgo8JX0lPg==","base64").toString()
+	},
+	{
+		name: 'current-position.html', 
+		content: Buffer("Y3VycmVudC1wb3NpdGlvbi5odG1sCgpsYXRpdHVkZTogPCU9IG1vZGVsLmdldCgnbGF0aXR1ZGUnKSU+","base64").toString()
+	},
+	{
+		name: 'home.html', 
+		content: Buffer("CldlbGNvbWUgdG8gZ2VvLWFjdGlvbnM6Cjx1bD4KCTxsaT48YSBocmVmPSJodHRwczovL2dpdGh1Yi5jb20vY2FuY2VyYmVyb1NneC9nZW8tYWN0aW9ucyI+Z2l0aHViIHByb2plY3Q8L2E+PC9saT4KCTxsaT48YSBocmVmPSIjZG9jdW1lbnRMaXN0Ij5Eb2N1bWVudCBsaXN0PC9hPjwvbGk+Cgk8bGk+PGEgaHJlZj0iI3BvbHlnb25FZGl0b3IiPlBvbHlnb24gZWRpdG9yPC9hPjwvbGk+Cgk8bGk+PGEgaHJlZj0iaW5kZXhfb2xkMi5odG1sIj50cmFja2VyIGV4YW1wbGUgKHBhcmEgZWwgR2F0byk8L2E+PC9saT4KPC91bD4=","base64").toString()
+	},
+	{
+		name: 'document-list.html', 
+		content: Buffer("PCUKdmFyIGRvY3MgPSBtb2RlbC5nZXQoJ2RvY3VtZW50cycpIHx8IFtdCiU+Cgo8YSBocmVmPSIjZG9jdW1lbnRFZGl0b3IiPk5ldzwvYT4KCgo8aDQ+RG9jdW1lbnRzICg8JT0gZG9jcy5sZW5ndGglPik6PC9oND4KCjwlIGlmKGRvY3MubGVuZ3RoKSB7ICU+Cjx1bD4KPCUgXy5lYWNoKGRvY3MsIGZ1bmN0aW9uKGRvYyl7ICU+Cgk8bGk+KDwlPSBkb2MubG9uZ2l0dWRlKycsICcrZG9jLmxhdGl0dWRlJT4pPC9saT4KPCUgfSkgJT4KPC91bD4KCjwlfSU+","base64").toString()
+	},
+	{
+		name: 'document-editor.html', 
+		content: Buffer("RG9jdW1lbnQgbmFtZTogPGlucHV0IHR5cGU9InRleHQiIGNsYXNzPSJkb2N1bWVudC1uYW1lIiB2YWx1ZT0iPCU9IG1vZGVsLmdldCgnbmFtZScpICU+Ij4KCjxidXR0b24gY2xhc3M9Im5ld1BvbHlnb24iPk5ldyBQb2x5Z29uPC9idXR0b24+CjxidXR0b24gY2xhc3M9InNhdmUiPlNhdmU8L2J1dHRvbj4KCjwlCnZhciBwb2x5Z29ucyA9IG1vZGVsLmdldCgncG9seWdvbnMnKQppZihwb2x5Z29ucyAmJiBwb2x5Z29ucy5sZW5ndGgpIHslPgoJPGg0PnBvbHlnb25zPC9oND4KPHVsPgo8JSBfLmVhY2gocG9seWdvbnMsIGZ1bmN0aW9uKHApeyAlPgoJPGxpPig8JT0gcC5uYW1lICU+KTwvbGk+CjwlIH0pICU+CjwvdWw+Cgo8JX0lPg==","base64").toString()
+	}
+]
 }).call(this,require("buffer").Buffer)
-},{"buffer":14,"path":17,"underscore":3}],13:[function(require,module,exports){
-'use strict'
-
-exports.byteLength = byteLength
-exports.toByteArray = toByteArray
-exports.fromByteArray = fromByteArray
-
-var lookup = []
-var revLookup = []
-var Arr = typeof Uint8Array !== 'undefined' ? Uint8Array : Array
-
-var code = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
-for (var i = 0, len = code.length; i < len; ++i) {
-  lookup[i] = code[i]
-  revLookup[code.charCodeAt(i)] = i
-}
-
-revLookup['-'.charCodeAt(0)] = 62
-revLookup['_'.charCodeAt(0)] = 63
-
-function placeHoldersCount (b64) {
-  var len = b64.length
-  if (len % 4 > 0) {
-    throw new Error('Invalid string. Length must be a multiple of 4')
-  }
-
-  // the number of equal signs (place holders)
-  // if there are two placeholders, than the two characters before it
-  // represent one byte
-  // if there is only one, then the three characters before it represent 2 bytes
-  // this is just a cheap hack to not do indexOf twice
-  return b64[len - 2] === '=' ? 2 : b64[len - 1] === '=' ? 1 : 0
-}
-
-function byteLength (b64) {
-  // base64 is 4/3 + up to two characters of the original data
-  return b64.length * 3 / 4 - placeHoldersCount(b64)
-}
-
-function toByteArray (b64) {
-  var i, j, l, tmp, placeHolders, arr
-  var len = b64.length
-  placeHolders = placeHoldersCount(b64)
-
-  arr = new Arr(len * 3 / 4 - placeHolders)
-
-  // if there are placeholders, only get up to the last complete 4 chars
-  l = placeHolders > 0 ? len - 4 : len
-
-  var L = 0
-
-  for (i = 0, j = 0; i < l; i += 4, j += 3) {
-    tmp = (revLookup[b64.charCodeAt(i)] << 18) | (revLookup[b64.charCodeAt(i + 1)] << 12) | (revLookup[b64.charCodeAt(i + 2)] << 6) | revLookup[b64.charCodeAt(i + 3)]
-    arr[L++] = (tmp >> 16) & 0xFF
-    arr[L++] = (tmp >> 8) & 0xFF
-    arr[L++] = tmp & 0xFF
-  }
-
-  if (placeHolders === 2) {
-    tmp = (revLookup[b64.charCodeAt(i)] << 2) | (revLookup[b64.charCodeAt(i + 1)] >> 4)
-    arr[L++] = tmp & 0xFF
-  } else if (placeHolders === 1) {
-    tmp = (revLookup[b64.charCodeAt(i)] << 10) | (revLookup[b64.charCodeAt(i + 1)] << 4) | (revLookup[b64.charCodeAt(i + 2)] >> 2)
-    arr[L++] = (tmp >> 8) & 0xFF
-    arr[L++] = tmp & 0xFF
-  }
-
-  return arr
-}
-
-function tripletToBase64 (num) {
-  return lookup[num >> 18 & 0x3F] + lookup[num >> 12 & 0x3F] + lookup[num >> 6 & 0x3F] + lookup[num & 0x3F]
-}
-
-function encodeChunk (uint8, start, end) {
-  var tmp
-  var output = []
-  for (var i = start; i < end; i += 3) {
-    tmp = (uint8[i] << 16) + (uint8[i + 1] << 8) + (uint8[i + 2])
-    output.push(tripletToBase64(tmp))
-  }
-  return output.join('')
-}
-
-function fromByteArray (uint8) {
-  var tmp
-  var len = uint8.length
-  var extraBytes = len % 3 // if we have 1 byte left, pad 2 bytes
-  var output = ''
-  var parts = []
-  var maxChunkLength = 16383 // must be multiple of 3
-
-  // go through the array every three bytes, we'll deal with trailing stuff later
-  for (var i = 0, len2 = len - extraBytes; i < len2; i += maxChunkLength) {
-    parts.push(encodeChunk(uint8, i, (i + maxChunkLength) > len2 ? len2 : (i + maxChunkLength)))
-  }
-
-  // pad the end with zeros, but make sure to not forget the extra bytes
-  if (extraBytes === 1) {
-    tmp = uint8[len - 1]
-    output += lookup[tmp >> 2]
-    output += lookup[(tmp << 4) & 0x3F]
-    output += '=='
-  } else if (extraBytes === 2) {
-    tmp = (uint8[len - 2] << 8) + (uint8[len - 1])
-    output += lookup[tmp >> 10]
-    output += lookup[(tmp >> 4) & 0x3F]
-    output += lookup[(tmp << 2) & 0x3F]
-    output += '='
-  }
-
-  parts.push(output)
-
-  return parts.join('')
-}
-
-},{}],14:[function(require,module,exports){
+},{"buffer":16,"path":20,"underscore":3}],16:[function(require,module,exports){
 (function (global){
 /*!
  * The buffer module from node.js, for the browser.
@@ -14394,8 +14414,6 @@ if (Buffer.TYPED_ARRAY_SUPPORT) {
 function assertSize (size) {
   if (typeof size !== 'number') {
     throw new TypeError('"size" argument must be a number')
-  } else if (size < 0) {
-    throw new RangeError('"size" argument must not be negative')
   }
 }
 
@@ -14472,7 +14490,7 @@ function fromString (that, string, encoding) {
 }
 
 function fromArrayLike (that, array) {
-  var length = array.length < 0 ? 0 : checked(array.length) | 0
+  var length = checked(array.length) | 0
   that = createBuffer(that, length)
   for (var i = 0; i < length; i += 1) {
     that[i] = array[i] & 255
@@ -14541,7 +14559,7 @@ function fromObject (that, obj) {
 }
 
 function checked (length) {
-  // Note: cannot use `length < kMaxLength()` here because that fails when
+  // Note: cannot use `length < kMaxLength` here because that fails when
   // length is NaN (which is otherwise coerced to zero.)
   if (length >= kMaxLength()) {
     throw new RangeError('Attempt to allocate Buffer larger than maximum ' +
@@ -16018,7 +16036,118 @@ function isnan (val) {
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"base64-js":13,"ieee754":15,"isarray":16}],15:[function(require,module,exports){
+},{"base64-js":17,"ieee754":18,"isarray":19}],17:[function(require,module,exports){
+'use strict'
+
+exports.toByteArray = toByteArray
+exports.fromByteArray = fromByteArray
+
+var lookup = []
+var revLookup = []
+var Arr = typeof Uint8Array !== 'undefined' ? Uint8Array : Array
+
+function init () {
+  var code = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
+  for (var i = 0, len = code.length; i < len; ++i) {
+    lookup[i] = code[i]
+    revLookup[code.charCodeAt(i)] = i
+  }
+
+  revLookup['-'.charCodeAt(0)] = 62
+  revLookup['_'.charCodeAt(0)] = 63
+}
+
+init()
+
+function toByteArray (b64) {
+  var i, j, l, tmp, placeHolders, arr
+  var len = b64.length
+
+  if (len % 4 > 0) {
+    throw new Error('Invalid string. Length must be a multiple of 4')
+  }
+
+  // the number of equal signs (place holders)
+  // if there are two placeholders, than the two characters before it
+  // represent one byte
+  // if there is only one, then the three characters before it represent 2 bytes
+  // this is just a cheap hack to not do indexOf twice
+  placeHolders = b64[len - 2] === '=' ? 2 : b64[len - 1] === '=' ? 1 : 0
+
+  // base64 is 4/3 + up to two characters of the original data
+  arr = new Arr(len * 3 / 4 - placeHolders)
+
+  // if there are placeholders, only get up to the last complete 4 chars
+  l = placeHolders > 0 ? len - 4 : len
+
+  var L = 0
+
+  for (i = 0, j = 0; i < l; i += 4, j += 3) {
+    tmp = (revLookup[b64.charCodeAt(i)] << 18) | (revLookup[b64.charCodeAt(i + 1)] << 12) | (revLookup[b64.charCodeAt(i + 2)] << 6) | revLookup[b64.charCodeAt(i + 3)]
+    arr[L++] = (tmp >> 16) & 0xFF
+    arr[L++] = (tmp >> 8) & 0xFF
+    arr[L++] = tmp & 0xFF
+  }
+
+  if (placeHolders === 2) {
+    tmp = (revLookup[b64.charCodeAt(i)] << 2) | (revLookup[b64.charCodeAt(i + 1)] >> 4)
+    arr[L++] = tmp & 0xFF
+  } else if (placeHolders === 1) {
+    tmp = (revLookup[b64.charCodeAt(i)] << 10) | (revLookup[b64.charCodeAt(i + 1)] << 4) | (revLookup[b64.charCodeAt(i + 2)] >> 2)
+    arr[L++] = (tmp >> 8) & 0xFF
+    arr[L++] = tmp & 0xFF
+  }
+
+  return arr
+}
+
+function tripletToBase64 (num) {
+  return lookup[num >> 18 & 0x3F] + lookup[num >> 12 & 0x3F] + lookup[num >> 6 & 0x3F] + lookup[num & 0x3F]
+}
+
+function encodeChunk (uint8, start, end) {
+  var tmp
+  var output = []
+  for (var i = start; i < end; i += 3) {
+    tmp = (uint8[i] << 16) + (uint8[i + 1] << 8) + (uint8[i + 2])
+    output.push(tripletToBase64(tmp))
+  }
+  return output.join('')
+}
+
+function fromByteArray (uint8) {
+  var tmp
+  var len = uint8.length
+  var extraBytes = len % 3 // if we have 1 byte left, pad 2 bytes
+  var output = ''
+  var parts = []
+  var maxChunkLength = 16383 // must be multiple of 3
+
+  // go through the array every three bytes, we'll deal with trailing stuff later
+  for (var i = 0, len2 = len - extraBytes; i < len2; i += maxChunkLength) {
+    parts.push(encodeChunk(uint8, i, (i + maxChunkLength) > len2 ? len2 : (i + maxChunkLength)))
+  }
+
+  // pad the end with zeros, but make sure to not forget the extra bytes
+  if (extraBytes === 1) {
+    tmp = uint8[len - 1]
+    output += lookup[tmp >> 2]
+    output += lookup[(tmp << 4) & 0x3F]
+    output += '=='
+  } else if (extraBytes === 2) {
+    tmp = (uint8[len - 2] << 8) + (uint8[len - 1])
+    output += lookup[tmp >> 10]
+    output += lookup[(tmp >> 4) & 0x3F]
+    output += lookup[(tmp << 2) & 0x3F]
+    output += '='
+  }
+
+  parts.push(output)
+
+  return parts.join('')
+}
+
+},{}],18:[function(require,module,exports){
 exports.read = function (buffer, offset, isLE, mLen, nBytes) {
   var e, m
   var eLen = nBytes * 8 - mLen - 1
@@ -16104,14 +16233,14 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
   buffer[offset + i - d] |= s * 128
 }
 
-},{}],16:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 var toString = {}.toString;
 
 module.exports = Array.isArray || function (arr) {
   return toString.call(arr) == '[object Array]';
 };
 
-},{}],17:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 (function (process){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -16339,7 +16468,7 @@ var substr = 'ab'.substr(-1) === 'b'
 ;
 
 }).call(this,require('_process'))
-},{"_process":18}],18:[function(require,module,exports){
+},{"_process":21}],21:[function(require,module,exports){
 // shim for using process in browser
 var process = module.exports = {};
 
@@ -16351,40 +16480,25 @@ var process = module.exports = {};
 var cachedSetTimeout;
 var cachedClearTimeout;
 
-function defaultSetTimout() {
-    throw new Error('setTimeout has not been defined');
-}
-function defaultClearTimeout () {
-    throw new Error('clearTimeout has not been defined');
-}
 (function () {
     try {
-        if (typeof setTimeout === 'function') {
-            cachedSetTimeout = setTimeout;
-        } else {
-            cachedSetTimeout = defaultSetTimout;
-        }
+        cachedSetTimeout = setTimeout;
     } catch (e) {
-        cachedSetTimeout = defaultSetTimout;
+        cachedSetTimeout = function () {
+            throw new Error('setTimeout is not defined');
+        }
     }
     try {
-        if (typeof clearTimeout === 'function') {
-            cachedClearTimeout = clearTimeout;
-        } else {
-            cachedClearTimeout = defaultClearTimeout;
-        }
+        cachedClearTimeout = clearTimeout;
     } catch (e) {
-        cachedClearTimeout = defaultClearTimeout;
+        cachedClearTimeout = function () {
+            throw new Error('clearTimeout is not defined');
+        }
     }
 } ())
 function runTimeout(fun) {
     if (cachedSetTimeout === setTimeout) {
         //normal enviroments in sane situations
-        return setTimeout(fun, 0);
-    }
-    // if setTimeout wasn't available but was latter defined
-    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
-        cachedSetTimeout = setTimeout;
         return setTimeout(fun, 0);
     }
     try {
@@ -16405,11 +16519,6 @@ function runTimeout(fun) {
 function runClearTimeout(marker) {
     if (cachedClearTimeout === clearTimeout) {
         //normal enviroments in sane situations
-        return clearTimeout(marker);
-    }
-    // if clearTimeout wasn't available but was latter defined
-    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
-        cachedClearTimeout = clearTimeout;
         return clearTimeout(marker);
     }
     try {
@@ -16521,4 +16630,4 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}]},{},[11]);
+},{}]},{},[14]);
