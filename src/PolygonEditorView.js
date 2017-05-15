@@ -2,6 +2,7 @@ var AbstractView = require('./AbstractView')
 var Backbone = require('backbone')
 var _ = require('underscore')
 var jQuery = require('jquery')
+var CurrentPositionView = require('./CurrentPositionView')
 
 module.exports = AbstractView.extend({
 
@@ -15,10 +16,14 @@ module.exports = AbstractView.extend({
 	initialize: function(application, model)
 	{
 		this.application = application
-		// debugger;
 		this.model = model || new Backbone.Model()
-		// this.model.set('points', [])
-		// this.model.set('name', 'unamed - ' + new Date().getTime())
+	},
+
+	afterRender: function()
+	{
+		this.currentPositionView = new CurrentPositionView(this.application)
+		this.currentPositionView.render()
+		this.$el.append(this.currentPositionView.$el)
 	},
 
 	mark: function()
@@ -29,13 +34,12 @@ module.exports = AbstractView.extend({
 			alert('Cant get current position, aborting')
 			return 
 		}
-		// console.log('currentPos', this.coordinateToModel(currentPos))
 		var points = this.model.get('points')
-		// debugger;
 		points.push(this.coordinateToModel(currentPos))
 		// this.model.set('points', points, {trigger: true}) // TODO: this doesn't work :(
 		this.render()
 	},
+
 	coordinateToModel: function(c)
 	{
 		var model = new Backbone.Model()
@@ -56,6 +60,7 @@ module.exports = AbstractView.extend({
 		}
 		return model
 	},
+
 	save: function()
 	{
 		var name = unescape(jQuery('.polygon-name').val())
@@ -65,8 +70,6 @@ module.exports = AbstractView.extend({
 			this.$('.document-name').focus()
 			return
 		}
-		// debugger;
-		// console.log(this.model.attributes)
 		this.application.polygonManager.addPolygon(this.model.get('documentName'), this.model)
 		Backbone.history.navigate('documentEditor?document='+escape(this.model.get('documentName')), {trigger: true})
 		

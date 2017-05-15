@@ -18,9 +18,14 @@ module.exports = Backbone.View.extend({
 		this.$el.empty()
 		this.$el.append(html)
 		this.delegateEvents()
+		this.afterRender()
 	},
 	getContext: function()
 	{
 		return this
+	},
+	afterRender: function()
+	{
+		
 	}
 })
