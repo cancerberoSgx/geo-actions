@@ -6,20 +6,29 @@ module.exports = AbstractView.extend({
 
 	initialize: function(application)
 	{
-		var self = this
-		self.application = application
-		self.model = new Backbone.Model()
-		self.model.on('change', function()
-		{
-			self.render()
-		})
-		self.application.positionManager.on('change', function()
-		{
-			var pos = self.application.positionManager.getCurrentPosition()
-			self.model.set('latitude', pos.latitude)
-			self.model.set('longitude', pos.longitude)
-		})
+		this.application = application
+		this.model = new Backbone.Model()
+		this.model.on('change', _.bind(this.render, this))
+		this.application.positionManager.on('change', _.bind(this.updatePosition, this))
+		
 	},
 
-	template: 'current-position.html'
+	template: 'current-position.html',
+
+	afterRender: function()
+	{
+		this.updatePosition()
+	},
+
+	updatePosition: function()
+	{
+		var pos = this.application.positionManager.getCurrentPosition()
+		// debugger;
+		if(!pos || !pos.latitude)
+		{
+			return
+		}
+		this.model.set('latitude', pos.latitude)
+		this.model.set('longitude', pos.longitude)
+	}
 })

@@ -13906,22 +13906,31 @@ module.exports = AbstractView.extend({
 
 	initialize: function(application)
 	{
-		var self = this
-		self.application = application
-		self.model = new Backbone.Model()
-		self.model.on('change', function()
-		{
-			self.render()
-		})
-		self.application.positionManager.on('change', function()
-		{
-			var pos = self.application.positionManager.getCurrentPosition()
-			self.model.set('latitude', pos.latitude)
-			self.model.set('longitude', pos.longitude)
-		})
+		this.application = application
+		this.model = new Backbone.Model()
+		this.model.on('change', _.bind(this.render, this))
+		this.application.positionManager.on('change', _.bind(this.updatePosition, this))
+		
 	},
 
-	template: 'current-position.html'
+	template: 'current-position.html',
+
+	afterRender: function()
+	{
+		this.updatePosition()
+	},
+
+	updatePosition: function()
+	{
+		var pos = this.application.positionManager.getCurrentPosition()
+		// debugger;
+		if(!pos || !pos.latitude)
+		{
+			return
+		}
+		this.model.set('latitude', pos.latitude)
+		this.model.set('longitude', pos.longitude)
+	}
 })
 },{"./AbstractView":6,"backbone":3,"underscore":5}],9:[function(require,module,exports){
 var AbstractView = require('./AbstractView')
@@ -14481,7 +14490,7 @@ var templates = [
 	},
 	{
 		name: 'polygon-editor.html', 
-		content: Buffer("PCUgCnZhciBwb2ludHMgPSBtb2RlbC5nZXQoJ3BvaW50cycpIHx8IFtdCiU+CgpQb2x5Z29uIG5hbWU6IDxpbnB1dCB0eXBlPSJ0ZXh0IiBjbGFzcz0icG9seWdvbi1uYW1lIiB2YWx1ZT0iPCU9IG1vZGVsLmdldCgnbmFtZScpICU+Ij4KCm9mIAoKPGEgaHJlZj0iI2RvY3VtZW50RWRpdG9yP2RvY3VtZW50PTwlPSBtb2RlbC5nZXQoJ2RvY3VtZW50TmFtZScpICU+Ij5kb2N1bWVudCA8JT0gbW9kZWwuZ2V0KCdkb2N1bWVudE5hbWUnKSAlPjwvYT4KCjxicj4KPGJ1dHRvbiBjbGFzcz0ibWFyayI+bWFyayE8L2J1dHRvbj4KPGJ1dHRvbiBjbGFzcz0ic2F2ZSI+c2F2ZTwvYnV0dG9uPgoKCgk8aDQ+UG9pbnRzOiAoPCU9IHBvaW50cy5sZW5ndGggJT4pPC9oND4KCjwlaWYocG9pbnRzICYmIHBvaW50cy5sZW5ndGgpIHslPgo8dWw+CjwlIF8uZWFjaChwb2ludHMsIGZ1bmN0aW9uKHApeyAlPgoJPGxpPig8JT0gcC5nZXQoJ2xvbmdpdHVkZScpKycsICcrcC5nZXQoJ2xhdGl0dWRlJykgJT4pPC9saT4KPCUgfSkgJT4KPC91bD4KCjwlfSU+","base64").toString()
+		content: Buffer("PCUgCnZhciBwb2ludHMgPSBtb2RlbC5nZXQoJ3BvaW50cycpIHx8IFtdCiU+CgpQb2x5Z29uIG5hbWU6IDxpbnB1dCB0eXBlPSJ0ZXh0IiBjbGFzcz0icG9seWdvbi1uYW1lIiB2YWx1ZT0iPCU9IG1vZGVsLmdldCgnbmFtZScpICU+Ij4KCm9mIAoKPGEgaHJlZj0iI2RvY3VtZW50RWRpdG9yP2RvY3VtZW50PTwlPSBtb2RlbC5nZXQoJ2RvY3VtZW50TmFtZScpICU+Ij5kb2N1bWVudCA8JT0gbW9kZWwuZ2V0KCdkb2N1bWVudE5hbWUnKSAlPjwvYT4KCjxicj4KPGJ1dHRvbiBjbGFzcz0ibWFyayI+bWFyayE8L2J1dHRvbj4KPGJ1dHRvbiBjbGFzcz0ic2F2ZSI+c2F2ZTwvYnV0dG9uPgoKPGg0PlBvaW50czogKDwlPSBwb2ludHMubGVuZ3RoICU+KTwvaDQ+Cgo8JWlmKHBvaW50cyAmJiBwb2ludHMubGVuZ3RoKSB7JT4KPHVsPgo8JSBfLmVhY2gocG9pbnRzLCBmdW5jdGlvbihwKXsgJT4KCTxsaT4oPCU9IHAuZ2V0KCdsb25naXR1ZGUnKSsnLCAnK3AuZ2V0KCdsYXRpdHVkZScpICU+KTwvbGk+CjwlIH0pICU+CjwvdWw+Cgo8JX0lPg==","base64").toString()
 	},
 	{
 		name: 'current-position.html', 
