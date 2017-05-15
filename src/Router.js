@@ -39,7 +39,7 @@ module.exports = Backbone.Router.extend({
 		var params = this.parseOptions(options);	
 		var PolygonEditorView = require('./PolygonEditorView')
 		var model = this.application.polygonManager.getPolygon(params.document, params.polygon)
-		// console.log('polygonEditor', model.get('points'))
+		// console.log('polygonEditor', model.attributes)
 		var view = new PolygonEditorView(this.application, model)
 		// debugger;
 		this.showView(view)

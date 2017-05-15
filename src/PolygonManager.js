@@ -72,46 +72,55 @@ _.extend(Class.prototype, {
 		return model
 	},
 
+
+	// export / import 
+
 	exportToJson: function()
 	{
-		// var s = [], self = this
-		// _.each(this.documents, function(doc)
-		// {
-		// 	s.push(self.exportDocumentToJson(doc))
-		// })
-		// return '['+s.join(',')+']'
-
-		// console.log('exportToJson',this.documents)
-		// debugger;
 		return JSON.stringify(this.documents, 0, 4)
-		// , function replacer(key, value) 
-		// {
-		// 	if (value instanceof Backbone.Model) 
-		// 	{
-		// 		// console.log('type of backbone model', value.attributes)
-		// 		return value.attribute;
-		// 	}
-		// 	return value;
-		// })
 	},
-	// exportDocumentToJson: function(doc)
-	// {
-	// 	// var s = []
-	// 	// _.each(doc.get('polygons'), function(p)
-	// 	// {
-	// 	// 	s.push(self.exportPolygonToJson(p))
-	// 	// })
-	// 	// return '{polygons: [' + s.join(',') + '}, name: "'+doc.get('name') + '"}'
-	// },
-	// exportPolygonToJson: function()
 
-	importFromJson: function(jsonString)
+	importFromJson: function(data)
 	{
-		var data = JSON.parse(jsonString)
+		// var data = JSON.parse(jsonString), 
+		var self = this
+		// console.log('importFromJson', data)
 		this.documents = []
 		_.each(data, function(docData)
 		{
-
+			self.documents.push(self.importDocument(docData))
 		})
+	},
+
+	importDocument: function(docData)
+	{
+		var model = new Backbone.Model(), self = this
+		model.set('name', docData.name)
+		var polygons = []
+		_.each(docData.polygons, function(p)
+		{
+			polygons.push(self.importPolygon(p))
+		})
+		model.set('polygons', polygons)
+		return model
+	},
+
+	importPolygon: function(p)
+	{
+		var model = new Backbone.Model()
+		model.set('name', p.name)
+		model.set('documentName', p.documentName)
+		var points = []
+		_.each(p.points, function(point)
+		{
+			var pointModel = new Backbone.Model()
+			_.each(point, function(val, name)
+			{
+				pointModel.set(name, val)
+			})
+			points.push(pointModel)
+		})
+		model.set('points', points)
+		return model
 	}
 })

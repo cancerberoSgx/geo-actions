@@ -1,18 +1,18 @@
 var fs = require('fs'),
-	path = require('path')
+	path = require('path'),
+	_ = require('underscore')
 
-var dataset = {
+// console.log(fs.readFileSync(path.join(__dirname, 'test1.json')).toString())
+var dataset = [
 	{
 		name: 'test1.json', 
-		content: fs.readFileSync(path.join(__dirname, 'test1.json')).toString()
+		content: require('./test1.json')
 	}
-}
+]
+
 
 module.exports = function(name)
 {
-	var d _.find(dataset, function(d){return d.name==name})
-	if(d)
-	{
-		return 
-	}
+	var d = _.find(dataset, function(d){return d.name==name})
+	return d ? d.content : []
 }

@@ -12,6 +12,6 @@ Document name: <input type="text" class="document-name" value="<%= model.get('na
 
 <ul>
 <% _.each(polygons, function(p){ %>
-	<li><a href="#polygonEditor?document<%= p.get('documentName')%>&polygon=<%= p.get('name')%>"><%= p.get('name') %></a> (with <%= p.get('points').length%> points)</li>
+	<li><a href="#polygonEditor?document=<%= p.get('documentName')%>&polygon=<%= p.get('name')%>"><%= p.get('name') %></a> (with <%= p.get('points').length%> points)</li>
 <% }) %>
 </ul>

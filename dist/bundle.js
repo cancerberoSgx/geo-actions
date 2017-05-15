@@ -1,4 +1,73 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+var path = require('path'),
+	_ = require('underscore');
+
+// console.log(fs.readFileSync(path.join(__dirname, 'test1.json')).toString())
+var dataset = [
+	{
+		name: 'test1.json', 
+		content: require('./test1.json')
+	}
+]
+
+
+module.exports = function(name)
+{
+	var d = _.find(dataset, function(d){return d.name==name})
+	return d ? d.content : []
+}
+},{"./test1.json":2,"path":23,"underscore":5}],2:[function(require,module,exports){
+module.exports=[
+    {
+        "name": "unameDocument1494808278230",
+        "polygons": [
+            {
+                "name": "unamed - 1494808280452",
+                "points": [
+                    {
+                        "accuracy": 20,
+                        "altitude": null,
+                        "altitudeAccuracy": null,
+                        "heading": null,
+                        "latitude": -34.8810883,
+                        "longitude": -56.1919854,
+                        "speed": null
+                    },
+                    {
+                        "accuracy": 20,
+                        "altitude": null,
+                        "altitudeAccuracy": null,
+                        "heading": null,
+                        "latitude": -34.8810883,
+                        "longitude": -56.1919854,
+                        "speed": null
+                    },
+                    {
+                        "accuracy": 20,
+                        "altitude": null,
+                        "altitudeAccuracy": null,
+                        "heading": null,
+                        "latitude": -34.8810883,
+                        "longitude": -56.1919854,
+                        "speed": null
+                    },
+                    {
+                        "accuracy": 20,
+                        "altitude": null,
+                        "altitudeAccuracy": null,
+                        "heading": null,
+                        "latitude": -34.8810883,
+                        "longitude": -56.1919854,
+                        "speed": null
+                    }
+                ],
+                "documentName": "unameDocument1494808278230"
+            }
+        ]
+    }
+]
+
+},{}],3:[function(require,module,exports){
 (function (global){
 //     Backbone.js 1.3.3
 
@@ -1922,7 +1991,7 @@
 });
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"jquery":2,"underscore":3}],2:[function(require,module,exports){
+},{"jquery":4,"underscore":5}],4:[function(require,module,exports){
 /*!
  * jQuery JavaScript Library v3.2.1
  * https://jquery.com/
@@ -12177,7 +12246,7 @@ if ( !noGlobal ) {
 return jQuery;
 } );
 
-},{}],3:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 //     Underscore.js 1.8.3
 //     http://underscorejs.org
 //     (c) 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
@@ -13727,7 +13796,7 @@ return jQuery;
   }
 }.call(this));
 
-},{}],4:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 var _ = require('underscore')
 var jQuery = require('jquery')
 var Backbone = require('backbone')
@@ -13754,7 +13823,7 @@ module.exports = Backbone.View.extend({
 		return this
 	}
 })
-},{"./templates":16,"backbone":1,"jquery":2,"underscore":3}],5:[function(require,module,exports){
+},{"./templates":18,"backbone":3,"jquery":4,"underscore":5}],7:[function(require,module,exports){
 var _ = require('underscore')
 var jQuery = require('jquery')
 var Backbone = require('backbone')
@@ -13763,6 +13832,7 @@ var Router = require('./Router')
 var PositionManager = require('./PositionManager')
 var PolygonManager = require('./PolygonManager')
 
+var datasets = require('../dataset-examples')
 
 var Application = function(data)
 {	
@@ -13784,6 +13854,8 @@ _(Application.prototype).extend({
 		this.positionManager.startWatching()
 
 		this.polygonManager = new PolygonManager()
+		this.polygonManager.importFromJson(datasets('test1.json'))
+		// console.log('this.polygonManager.documents', this.polygonManager.documents)
 
 		this.router = new Router(this);
 		Backbone.history.start();
@@ -13820,7 +13892,7 @@ _(Application.prototype).extend({
 });
 
 module.exports = Application
-},{"./PolygonManager":12,"./PositionManager":13,"./Router":14,"backbone":1,"jquery":2,"underscore":3}],6:[function(require,module,exports){
+},{"../dataset-examples":1,"./PolygonManager":14,"./PositionManager":15,"./Router":16,"backbone":3,"jquery":4,"underscore":5}],8:[function(require,module,exports){
 var AbstractView = require('./AbstractView')
 var Backbone = require('backbone')
 var _ = require('underscore')
@@ -13855,7 +13927,7 @@ module.exports = AbstractView.extend({
 	// 	}
 	// }
 })
-},{"./AbstractView":4,"backbone":1,"underscore":3}],7:[function(require,module,exports){
+},{"./AbstractView":6,"backbone":3,"underscore":5}],9:[function(require,module,exports){
 var AbstractView = require('./AbstractView')
 var Backbone = require('backbone')
 var _ = require('underscore')
@@ -13904,7 +13976,7 @@ module.exports = AbstractView.extend({
 		alert('not impl')
 	}
 })
-},{"./AbstractView":4,"backbone":1,"jquery":2,"underscore":3}],8:[function(require,module,exports){
+},{"./AbstractView":6,"backbone":3,"jquery":4,"underscore":5}],10:[function(require,module,exports){
 var AbstractView = require('./AbstractView')
 var Backbone = require('backbone')
 var _ = require('underscore')
@@ -13930,7 +14002,7 @@ module.exports = AbstractView.extend({
 		Backbone.history.navigate('documentEditor', {trigger: true})
 	}
 })
-},{"./AbstractView":4,"backbone":1,"underscore":3}],9:[function(require,module,exports){
+},{"./AbstractView":6,"backbone":3,"underscore":5}],11:[function(require,module,exports){
 var AbstractView = require('./AbstractView')
 var Backbone = require('backbone')
 var _ = require('underscore')
@@ -13980,7 +14052,7 @@ module.exports = AbstractView.extend({
 		alert('not impl')
 	}
 })
-},{"./AbstractView":4,"backbone":1,"jquery":2,"underscore":3}],10:[function(require,module,exports){
+},{"./AbstractView":6,"backbone":3,"jquery":4,"underscore":5}],12:[function(require,module,exports){
 var AbstractView = require('./AbstractView')
 var Backbone = require('backbone')
 var _ = require('underscore')
@@ -14015,7 +14087,7 @@ module.exports = AbstractView.extend({
 	// 	}
 	// }
 })
-},{"./AbstractView":4,"backbone":1,"underscore":3}],11:[function(require,module,exports){
+},{"./AbstractView":6,"backbone":3,"underscore":5}],13:[function(require,module,exports){
 var AbstractView = require('./AbstractView')
 var Backbone = require('backbone')
 var _ = require('underscore')
@@ -14033,9 +14105,10 @@ module.exports = AbstractView.extend({
 	initialize: function(application, model)
 	{
 		this.application = application
+		// debugger;
 		this.model = model || new Backbone.Model()
-		this.model.set('points', [])
-		this.model.set('name', 'unamed - ' + new Date().getTime())
+		// this.model.set('points', [])
+		// this.model.set('name', 'unamed - ' + new Date().getTime())
 	},
 
 	mark: function()
@@ -14089,7 +14162,7 @@ module.exports = AbstractView.extend({
 		
 	}
 })
-},{"./AbstractView":4,"backbone":1,"jquery":2,"underscore":3}],12:[function(require,module,exports){
+},{"./AbstractView":6,"backbone":3,"jquery":4,"underscore":5}],14:[function(require,module,exports){
 /*
 I'm a store for named places - given a point I'm able to tell which place it belong.
 */
@@ -14164,51 +14237,60 @@ _.extend(Class.prototype, {
 		return model
 	},
 
+
+	// export / import 
+
 	exportToJson: function()
 	{
-		// var s = [], self = this
-		// _.each(this.documents, function(doc)
-		// {
-		// 	s.push(self.exportDocumentToJson(doc))
-		// })
-		// return '['+s.join(',')+']'
-
-		// console.log('exportToJson',this.documents)
-		// debugger;
 		return JSON.stringify(this.documents, 0, 4)
-		// , function replacer(key, value) 
-		// {
-		// 	if (value instanceof Backbone.Model) 
-		// 	{
-		// 		// console.log('type of backbone model', value.attributes)
-		// 		return value.attribute;
-		// 	}
-		// 	return value;
-		// })
 	},
-	// exportDocumentToJson: function(doc)
-	// {
-	// 	// var s = []
-	// 	// _.each(doc.get('polygons'), function(p)
-	// 	// {
-	// 	// 	s.push(self.exportPolygonToJson(p))
-	// 	// })
-	// 	// return '{polygons: [' + s.join(',') + '}, name: "'+doc.get('name') + '"}'
-	// },
-	// exportPolygonToJson: function()
 
-	importFromJson: function(jsonString)
+	importFromJson: function(data)
 	{
-		var data = JSON.parse(jsonString)
+		// var data = JSON.parse(jsonString), 
+		var self = this
+		// console.log('importFromJson', data)
 		this.documents = []
 		_.each(data, function(docData)
 		{
-
+			self.documents.push(self.importDocument(docData))
 		})
+	},
+
+	importDocument: function(docData)
+	{
+		var model = new Backbone.Model(), self = this
+		model.set('name', docData.name)
+		var polygons = []
+		_.each(docData.polygons, function(p)
+		{
+			polygons.push(self.importPolygon(p))
+		})
+		model.set('polygons', polygons)
+		return model
+	},
+
+	importPolygon: function(p)
+	{
+		var model = new Backbone.Model()
+		model.set('name', p.name)
+		model.set('documentName', p.documentName)
+		var points = []
+		_.each(p.points, function(point)
+		{
+			var pointModel = new Backbone.Model()
+			_.each(point, function(val, name)
+			{
+				pointModel.set(name, val)
+			})
+			points.push(pointModel)
+		})
+		model.set('points', points)
+		return model
 	}
 })
 
-},{"backbone":1,"underscore":3}],13:[function(require,module,exports){
+},{"backbone":3,"underscore":5}],15:[function(require,module,exports){
 /*
 I'm a store for named places - given a point I'm able to tell which place it belong.
 */
@@ -14270,7 +14352,7 @@ _.extend(Class.prototype, {
 
 module.exports = Class
 
-},{"backbone":1,"underscore":3}],14:[function(require,module,exports){
+},{"backbone":3,"underscore":5}],16:[function(require,module,exports){
 var Backbone = require('backbone')
 var _ = require('underscore')
 
@@ -14312,7 +14394,7 @@ module.exports = Backbone.Router.extend({
 		var params = this.parseOptions(options);	
 		var PolygonEditorView = require('./PolygonEditorView')
 		var model = this.application.polygonManager.getPolygon(params.document, params.polygon)
-		// console.log('polygonEditor', model.get('points'))
+		// console.log('polygonEditor', model.attributes)
 		var view = new PolygonEditorView(this.application, model)
 		// debugger;
 		this.showView(view)
@@ -14373,7 +14455,7 @@ module.exports = Backbone.Router.extend({
 })
 
 
-},{"./CurrentPositionView":6,"./DocumentEditorView":7,"./DocumentListView":8,"./ExportDocumentListView":9,"./HomeView":10,"./PolygonEditorView":11,"backbone":1,"underscore":3}],15:[function(require,module,exports){
+},{"./CurrentPositionView":8,"./DocumentEditorView":9,"./DocumentListView":10,"./ExportDocumentListView":11,"./HomeView":12,"./PolygonEditorView":13,"backbone":3,"underscore":5}],17:[function(require,module,exports){
 var Backbone = require('backbone')
 var _ = require('underscore')
 
@@ -14395,7 +14477,7 @@ app.start()
 // view1.$el = document.body
 // view1.render()
 
-},{"./Application":5,"backbone":1,"underscore":3}],16:[function(require,module,exports){
+},{"./Application":7,"backbone":3,"underscore":5}],18:[function(require,module,exports){
 (function (Buffer){
 
 var _ = require('underscore')
@@ -14436,7 +14518,7 @@ var templates = [
 	},
 	{
 		name: 'document-editor.html', 
-		content: Buffer("PCUgCnZhciBwb2x5Z29ucyA9IG1vZGVsLmdldCgncG9seWdvbnMnKSB8fCBbXQolPgoKRG9jdW1lbnQgbmFtZTogPGlucHV0IHR5cGU9InRleHQiIGNsYXNzPSJkb2N1bWVudC1uYW1lIiB2YWx1ZT0iPCU9IG1vZGVsLmdldCgnbmFtZScpICU+Ij4KPGJyPgo8YnV0dG9uIGNsYXNzPSJuZXdQb2x5Z29uIj5OZXcgUG9seWdvbjwvYnV0dG9uPgo8IS0tIDxidXR0b24gY2xhc3M9InNhdmUiPlNhdmU8L2J1dHRvbj4gLS0+CjxhIGhyZWY9IiNkb2N1bWVudExpc3QiPmdvIHRvIGRvY3VtZW50IGxpc3Q8L2E+CgoJPGg0PlBvbHlnb25zOiAoPCU9IHBvbHlnb25zLmxlbmd0aCAlPik8L2g0PgoKPHVsPgo8JSBfLmVhY2gocG9seWdvbnMsIGZ1bmN0aW9uKHApeyAlPgoJPGxpPjxhIGhyZWY9IiNwb2x5Z29uRWRpdG9yP2RvY3VtZW50PCU9IHAuZ2V0KCdkb2N1bWVudE5hbWUnKSU+JnBvbHlnb249PCU9IHAuZ2V0KCduYW1lJyklPiI+PCU9IHAuZ2V0KCduYW1lJykgJT48L2E+ICh3aXRoIDwlPSBwLmdldCgncG9pbnRzJykubGVuZ3RoJT4gcG9pbnRzKTwvbGk+CjwlIH0pICU+CjwvdWw+Cg==","base64").toString()
+		content: Buffer("PCUgCnZhciBwb2x5Z29ucyA9IG1vZGVsLmdldCgncG9seWdvbnMnKSB8fCBbXQolPgoKRG9jdW1lbnQgbmFtZTogPGlucHV0IHR5cGU9InRleHQiIGNsYXNzPSJkb2N1bWVudC1uYW1lIiB2YWx1ZT0iPCU9IG1vZGVsLmdldCgnbmFtZScpICU+Ij4KPGJyPgo8YnV0dG9uIGNsYXNzPSJuZXdQb2x5Z29uIj5OZXcgUG9seWdvbjwvYnV0dG9uPgo8IS0tIDxidXR0b24gY2xhc3M9InNhdmUiPlNhdmU8L2J1dHRvbj4gLS0+CjxhIGhyZWY9IiNkb2N1bWVudExpc3QiPmdvIHRvIGRvY3VtZW50IGxpc3Q8L2E+CgoJPGg0PlBvbHlnb25zOiAoPCU9IHBvbHlnb25zLmxlbmd0aCAlPik8L2g0PgoKPHVsPgo8JSBfLmVhY2gocG9seWdvbnMsIGZ1bmN0aW9uKHApeyAlPgoJPGxpPjxhIGhyZWY9IiNwb2x5Z29uRWRpdG9yP2RvY3VtZW50PTwlPSBwLmdldCgnZG9jdW1lbnROYW1lJyklPiZwb2x5Z29uPTwlPSBwLmdldCgnbmFtZScpJT4iPjwlPSBwLmdldCgnbmFtZScpICU+PC9hPiAod2l0aCA8JT0gcC5nZXQoJ3BvaW50cycpLmxlbmd0aCU+IHBvaW50cyk8L2xpPgo8JSB9KSAlPgo8L3VsPgo=","base64").toString()
 	},
 	{
 		name: 'export-document-list.html', 
@@ -14445,7 +14527,7 @@ var templates = [
 	
 ]
 }).call(this,require("buffer").Buffer)
-},{"buffer":17,"path":21,"underscore":3}],17:[function(require,module,exports){
+},{"buffer":19,"path":23,"underscore":5}],19:[function(require,module,exports){
 (function (global){
 /*!
  * The buffer module from node.js, for the browser.
@@ -16236,7 +16318,7 @@ function isnan (val) {
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"base64-js":18,"ieee754":19,"isarray":20}],18:[function(require,module,exports){
+},{"base64-js":20,"ieee754":21,"isarray":22}],20:[function(require,module,exports){
 'use strict'
 
 exports.toByteArray = toByteArray
@@ -16347,7 +16429,7 @@ function fromByteArray (uint8) {
   return parts.join('')
 }
 
-},{}],19:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 exports.read = function (buffer, offset, isLE, mLen, nBytes) {
   var e, m
   var eLen = nBytes * 8 - mLen - 1
@@ -16433,14 +16515,14 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
   buffer[offset + i - d] |= s * 128
 }
 
-},{}],20:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 var toString = {}.toString;
 
 module.exports = Array.isArray || function (arr) {
   return toString.call(arr) == '[object Array]';
 };
 
-},{}],21:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 (function (process){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -16668,7 +16750,7 @@ var substr = 'ab'.substr(-1) === 'b'
 ;
 
 }).call(this,require('_process'))
-},{"_process":22}],22:[function(require,module,exports){
+},{"_process":24}],24:[function(require,module,exports){
 // shim for using process in browser
 var process = module.exports = {};
 
@@ -16830,4 +16912,4 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}]},{},[15]);
+},{}]},{},[17]);

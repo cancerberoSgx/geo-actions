@@ -6,6 +6,7 @@ var Router = require('./Router')
 var PositionManager = require('./PositionManager')
 var PolygonManager = require('./PolygonManager')
 
+var datasets = require('../dataset-examples')
 
 var Application = function(data)
 {	
@@ -27,6 +28,8 @@ _(Application.prototype).extend({
 		this.positionManager.startWatching()
 
 		this.polygonManager = new PolygonManager()
+		this.polygonManager.importFromJson(datasets('test1.json'))
+		// console.log('this.polygonManager.documents', this.polygonManager.documents)
 
 		this.router = new Router(this);
 		Backbone.history.start();

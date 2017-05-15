@@ -15,9 +15,10 @@ module.exports = AbstractView.extend({
 	initialize: function(application, model)
 	{
 		this.application = application
+		// debugger;
 		this.model = model || new Backbone.Model()
-		this.model.set('points', [])
-		this.model.set('name', 'unamed - ' + new Date().getTime())
+		// this.model.set('points', [])
+		// this.model.set('name', 'unamed - ' + new Date().getTime())
 	},
 
 	mark: function()
