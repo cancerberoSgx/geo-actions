@@ -13,6 +13,8 @@ module.exports = Backbone.Router.extend({
 		'documentEditor': 'documentEditor',
 		'documentEditor?:options': 'documentEditor', 
 
+		'exportDocumentList': 'exportDocumentList',
+
 		'': 'home'
 	},	
 	initialize: function(application) 
@@ -37,6 +39,7 @@ module.exports = Backbone.Router.extend({
 		var params = this.parseOptions(options);	
 		var PolygonEditorView = require('./PolygonEditorView')
 		var model = this.application.polygonManager.getPolygon(params.document, params.polygon)
+		// console.log('polygonEditor', model.get('points'))
 		var view = new PolygonEditorView(this.application, model)
 		// debugger;
 		this.showView(view)
@@ -69,6 +72,16 @@ module.exports = Backbone.Router.extend({
 		var model = this.application.polygonManager.getDocumentList()
 		var view = new DocumentListView(this.application, model)
 		this.showView(view)
+	},
+	exportDocumentList: function()
+	{
+		var json = this.application.polygonManager.exportToJson()
+		var model = new Backbone.Model()
+		model.set('json', json)
+		var ExportDocumentListView = require('./ExportDocumentListView')
+		var view = new ExportDocumentListView(this.application, model)
+		this.showView(view)
+		// debugger;
 	},
  	parseOptions: function(options)
 	{

@@ -16,7 +16,7 @@ _.extend(Class.prototype, {
 	getPolygon: function(documentName, polygonName)
 	{
 		var document = this.getDocument(documentName)
-		var polygon = _.find(document.polygons, function(p)
+		var polygon = _.find(document.get('polygons'), function(p)
 		{
 			return p.get('name') == polygonName
 		})
@@ -28,17 +28,26 @@ _.extend(Class.prototype, {
 			// polygon.set('documentName', documentName)
 		}
 		polygon.set('documentName', polygon.get('documentName') || documentName) 
-		// polygon.set('seba', 'seba')
 		return polygon
 	},
 	addPolygon: function(documentName, pol)
 	{
-		// debugger;
 		var document = this.getDocument(documentName)
-		// TODO: check if already exists
-		pol.set('documentName', pol.get('documentName') || documentName)
-		document.set('polygons', document.get('polygons').concat([pol]))
-		console.log('documents polygons: ', document.get('polygons'))
+		var polygon = _.find(document.get('polygons'), function(p)
+		{
+			return p.get('name')==pol.get('name')
+		})
+		if(polygon)
+		{
+			polygon.attributes = pol.attributes //update it
+			polExists=true
+		}
+		else
+		{
+			pol.set('documentName', pol.get('documentName') || documentName)
+			document.set('polygons', document.get('polygons').concat([pol]))
+		}
+		// console.log('documents polygons: ', document.get('polygons'))
 	},
 	getDocument: function(name)
 	{
@@ -46,7 +55,6 @@ _.extend(Class.prototype, {
 		{
 			return d.get('name')==name
 		})
-		console.log('getdocument found', name, document)
 		if(!document)
 		{
 			document = new Backbone.Model()
@@ -66,8 +74,36 @@ _.extend(Class.prototype, {
 
 	exportToJson: function()
 	{
-		return JSON.stringify(this.documents)
+		// var s = [], self = this
+		// _.each(this.documents, function(doc)
+		// {
+		// 	s.push(self.exportDocumentToJson(doc))
+		// })
+		// return '['+s.join(',')+']'
+
+		// console.log('exportToJson',this.documents)
+		// debugger;
+		return JSON.stringify(this.documents, 0, 4)
+		// , function replacer(key, value) 
+		// {
+		// 	if (value instanceof Backbone.Model) 
+		// 	{
+		// 		// console.log('type of backbone model', value.attributes)
+		// 		return value.attribute;
+		// 	}
+		// 	return value;
+		// })
 	},
+	// exportDocumentToJson: function(doc)
+	// {
+	// 	// var s = []
+	// 	// _.each(doc.get('polygons'), function(p)
+	// 	// {
+	// 	// 	s.push(self.exportPolygonToJson(p))
+	// 	// })
+	// 	// return '{polygons: [' + s.join(',') + '}, name: "'+doc.get('name') + '"}'
+	// },
+	// exportPolygonToJson: function()
 
 	importFromJson: function(jsonString)
 	{

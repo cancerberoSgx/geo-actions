@@ -14,14 +14,10 @@ module.exports = AbstractView.extend({
 
 	initialize: function(application, model)
 	{
-		// console.log('model ', model)
 		this.application = application
-		// this.points = []
-		// this.polygonName = 'unamed1'
 		this.model = model || new Backbone.Model()
 		this.model.set('points', [])
 		this.model.set('name', 'unamed - ' + new Date().getTime())
-		// this.model.on('change', _.bind(this.render, this))
 	},
 
 	mark: function()
@@ -32,13 +28,33 @@ module.exports = AbstractView.extend({
 			alert('Cant get current position, aborting')
 			return 
 		}
-		// console.log('currentPos', currentPos)
+		// console.log('currentPos', this.coordinateToModel(currentPos))
 		var points = this.model.get('points')
-		points.push(currentPos)
+		// debugger;
+		points.push(this.coordinateToModel(currentPos))
 		// this.model.set('points', points, {trigger: true}) // TODO: this doesn't work :(
 		this.render()
 	},
-
+	coordinateToModel: function(c)
+	{
+		var model = new Backbone.Model()
+		model.attributes = {
+			accuracy: c.accuracy,
+			altitude: c.altitude,
+			altitudeAccuracy: c.altitudeAccuracy,
+			heading: c.heading,
+			latitude: c.latitude,
+			longitude: c.longitude,
+			speed: c.speed,
+			altitude: c.altitude,
+			altitudeAccuracy: c.altitudeAccuracy,
+			heading: c.heading,
+			latitude: c.latitude,
+			longitude: c.longitude,
+			speed: c.speed
+		}
+		return model
+	},
 	save: function()
 	{
 		var name = unescape(jQuery('.polygon-name').val())

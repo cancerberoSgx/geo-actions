@@ -2,13 +2,14 @@
 var docs = model.get('documents') || []
 %>
 
-<a href="#documentEditor">New</a>
+<a href="#documentEditor">New document</a> 
+<a href="#exportDocumentList">Export document list to JSON</a>
 
 
 <h4>Documents (<%= docs.length%>):</h4>
 
 <ul>
 <% _.each(docs, function(doc){ %>
-	<li>(<%= doc.get('name') %>) - (with <%= doc.get('polygons').length%> polygons) </li>
+	<li><a href="#documentEditor?document=<%= escape(doc.get('name')) %>"><%= doc.get('name') %></a> (with <%= doc.get('polygons').length%> polygons)</li>
 <% }) %>
 </ul>

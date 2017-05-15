@@ -38,5 +38,10 @@ var templates = [
 	{
 		name: 'document-editor.html', 
 		content: fs.readFileSync(path.join(__dirname, 'document-editor.html')).toString()
+	},
+	{
+		name: 'export-document-list.html', 
+		content: fs.readFileSync(path.join(__dirname, 'export-document-list.html')).toString()
 	}
+	
 ]

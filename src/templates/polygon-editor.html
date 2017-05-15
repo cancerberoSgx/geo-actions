@@ -18,7 +18,7 @@ of
 <%if(points && points.length) {%>
 <ul>
 <% _.each(points, function(p){ %>
-	<li>(<%= p.longitude+', '+p.latitude%>)</li>
+	<li>(<%= p.get('longitude')+', '+p.get('latitude') %>)</li>
 <% }) %>
 </ul>
 

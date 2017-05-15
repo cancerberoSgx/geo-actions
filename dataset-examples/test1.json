@@ -1,0 +1,49 @@
+[
+    {
+        "name": "unameDocument1494808278230",
+        "polygons": [
+            {
+                "name": "unamed - 1494808280452",
+                "points": [
+                    {
+                        "accuracy": 20,
+                        "altitude": null,
+                        "altitudeAccuracy": null,
+                        "heading": null,
+                        "latitude": -34.8810883,
+                        "longitude": -56.1919854,
+                        "speed": null
+                    },
+                    {
+                        "accuracy": 20,
+                        "altitude": null,
+                        "altitudeAccuracy": null,
+                        "heading": null,
+                        "latitude": -34.8810883,
+                        "longitude": -56.1919854,
+                        "speed": null
+                    },
+                    {
+                        "accuracy": 20,
+                        "altitude": null,
+                        "altitudeAccuracy": null,
+                        "heading": null,
+                        "latitude": -34.8810883,
+                        "longitude": -56.1919854,
+                        "speed": null
+                    },
+                    {
+                        "accuracy": 20,
+                        "altitude": null,
+                        "altitudeAccuracy": null,
+                        "heading": null,
+                        "latitude": -34.8810883,
+                        "longitude": -56.1919854,
+                        "speed": null
+                    }
+                ],
+                "documentName": "unameDocument1494808278230"
+            }
+        ]
+    }
+]
