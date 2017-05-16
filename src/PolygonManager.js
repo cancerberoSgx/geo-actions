@@ -1,5 +1,6 @@
 /*
-I'm a store for named places - given a point I'm able to tell which place it belong.
+	I'm a store with the application models like polygon and documents and other core utilities.
+	TODO: split in several files
 */
 var _ = require('underscore')
 var Backbone = require('backbone')
@@ -13,8 +14,13 @@ module.exports = Class
 
 _.extend(Class.prototype, {
 
+
+	// polygons
+
+
 	getPolygon: function(documentName, polygonName)
 	{
+		polygonName = polygonName || 'polygon_' + this.printTimestamp()
 		var document = this.getDocument(documentName)
 		var polygon = _.find(document.get('polygons'), function(p)
 		{
@@ -25,11 +31,11 @@ _.extend(Class.prototype, {
 			polygon = new Backbone.Model()
 			polygon.set('name', polygonName)
 			polygon.set('points', [])
-			// polygon.set('documentName', documentName)
 		}
 		polygon.set('documentName', polygon.get('documentName') || documentName) 
 		return polygon
 	},
+
 	addPolygon: function(documentName, pol)
 	{
 		var document = this.getDocument(documentName)
@@ -49,6 +55,12 @@ _.extend(Class.prototype, {
 		}
 		// console.log('documents polygons: ', document.get('polygons'))
 	},
+
+
+
+
+	// documents 
+
 	getDocument: function(name)
 	{
 		var document =  _.find(this.documents, function(d)
@@ -58,11 +70,19 @@ _.extend(Class.prototype, {
 		if(!document)
 		{
 			document = new Backbone.Model()
-			document.set('name', name || 'unameDocument'+new Date().getTime())
+			document.set('name', name || 'document_' + this.printTimestamp())
 			document.set('polygons', [])
 			this.documents.push(document)
 		}
 		return document
+	},
+
+	removeDocument: function(docName)
+	{
+		this.documents = _.filter(this.documents, function(d)
+		{
+			return d.get('name') != docName
+		})
 	},
 
 	getDocumentList: function()
@@ -71,6 +91,7 @@ _.extend(Class.prototype, {
 		model.set('documents', this.documents)
 		return model
 	},
+
 
 
 	// export / import 
@@ -82,14 +103,25 @@ _.extend(Class.prototype, {
 
 	importFromJson: function(data)
 	{
-		// var data = JSON.parse(jsonString), 
 		var self = this
-		// console.log('importFromJson', data)
 		this.documents = []
 		_.each(data, function(docData)
 		{
 			self.documents.push(self.importDocument(docData))
 		})
+	},
+
+	printTimestamp: function(t)
+	{
+		t = t || new Date().getTime()
+		var M = 10000
+		var minus = Math.round(t / M) * M
+		var result = t - minus
+		if(result < 0)
+		{
+			result = result * -1
+		}
+		return result
 	},
 
 	importDocument: function(docData)

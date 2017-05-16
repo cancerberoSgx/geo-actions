@@ -8,7 +8,9 @@ module.exports = AbstractView.extend({
 
 	events: {
 		'click .mark': 'mark',
-		'click .save': 'save'
+		'click .save': 'save',
+
+		'click .remove': 'remove'
 	},
 
 	template: 'polygon-editor.html',
@@ -24,8 +26,16 @@ module.exports = AbstractView.extend({
 		this.currentPositionView = new CurrentPositionView(this.application)
 		this.currentPositionView.render()
 		this.$el.append(this.currentPositionView.$el)
-	},
 
+		var nav = require('./navigator/maps-test')
+		nav()
+		// debugger
+		// this.__maptest1()
+	},
+	// __maptest1: function()
+	// {
+	// 	require('../navigator')()
+	// },
 	mark: function()
 	{
 		var currentPos = this.application.positionManager.getCurrentPosition()
@@ -38,6 +48,16 @@ module.exports = AbstractView.extend({
 		points.push(this.coordinateToModel(currentPos))
 		// this.model.set('points', points, {trigger: true}) // TODO: this doesn't work :(
 		this.render()
+	},
+
+	remove: function()
+	{
+		if(!confirm('Are you sure you want to remove polygon '+this.model.get('name')+ '??'))
+		{
+			return
+		}
+		this.application.positionManager.removePolygon(this.model)
+		Backbone.history.navigate('documentEditor?document=' + this.model.get('documentName'), {trigger: true})
 	},
 
 	coordinateToModel: function(c)

@@ -23,7 +23,7 @@ module.exports = AbstractView.extend({
 	updatePosition: function()
 	{
 		var pos = this.application.positionManager.getCurrentPosition()
-		// debugger;
+
 		if(!pos || !pos.latitude)
 		{
 			return

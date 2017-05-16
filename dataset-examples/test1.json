@@ -1,9 +1,9 @@
 [
     {
-        "name": "unameDocument1494808278230",
+        "name": "document_1",
         "polygons": [
             {
-                "name": "unamed - 1494808280452",
+                "name": "polygon_1",
                 "points": [
                     {
                         "accuracy": 20,
@@ -42,7 +42,7 @@
                         "speed": null
                     }
                 ],
-                "documentName": "unameDocument1494808278230"
+                "documentName": "document_1"
             }
         ]
     }
