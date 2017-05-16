@@ -27,15 +27,15 @@ module.exports = AbstractView.extend({
 		this.currentPositionView.render()
 		this.$el.append(this.currentPositionView.$el)
 
-		var nav = require('./navigator/maps-test')
-		nav()
-		// debugger
-		// this.__maptest1()
+		var PolygonVisualEditor = require('./navigator/PolygonVisualEditor')
+		var editorView = new PolygonVisualEditor(this.application, this.model)
+		editorView.$el = this.$('.visual-editor')
+		editorView.render()
+
+		// var nav = require('./navigator/maps-test')
+		// nav()
 	},
-	// __maptest1: function()
-	// {
-	// 	require('../navigator')()
-	// },
+
 	mark: function()
 	{
 		var currentPos = this.application.positionManager.getCurrentPosition()

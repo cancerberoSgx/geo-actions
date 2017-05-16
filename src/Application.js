@@ -16,7 +16,10 @@ _(Application.prototype).extend({
 
 	start: function()
 	{
-		// jQuery('body').size()
+		
+		this.WIDTH = jQuery(window).width()
+		this.HEIGHT = jQuery(window).height()
+		
 		if(jQuery('#mainContainer').length===0)
 		{
 			jQuery('body').append('<div id="mainContainer"></div>'); 

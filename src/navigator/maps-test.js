@@ -34,11 +34,11 @@ module.exports = function drawMap()
 
 	function drawMap(coords)
 	{
-		var uluru = new google.maps.LatLng(coords.latitude, coords.longitude);
+		var center = new google.maps.LatLng(coords.latitude, coords.longitude);
 
 		map = new google.maps.Map(document.getElementById("map"), {
 			zoom: 14,
-			center: uluru,
+			center: center,
 			mapTypeId: google.maps.MapTypeId.SATELLITE
 		});
 

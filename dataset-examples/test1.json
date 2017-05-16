@@ -1,49 +1,51 @@
 [
     {
-        "name": "document_1",
+        "name": "document_254",
         "polygons": [
             {
-                "name": "polygon_1",
+                "name": "polygon_1496",
                 "points": [
                     {
-                        "accuracy": 20,
-                        "altitude": null,
-                        "altitudeAccuracy": null,
-                        "heading": null,
-                        "latitude": -34.8810883,
-                        "longitude": -56.1919854,
-                        "speed": null
+                        "accuracy": 5,
+                        "altitude": -1.42755126953125,
+                        "altitudeAccuracy": 8,
+                        "heading": 40.078125,
+                        "latitude": -34.8812120547843,
+                        "longitude": -56.19207778019476,
+                        "speed": 0
                     },
                     {
-                        "accuracy": 20,
-                        "altitude": null,
-                        "altitudeAccuracy": null,
-                        "heading": null,
-                        "latitude": -34.8810883,
-                        "longitude": -56.1919854,
-                        "speed": null
+                        "accuracy": 5,
+                        "altitude": 3.8238525390625,
+                        "altitudeAccuracy": 8,
+                        "heading": 37.6171875,
+                        "latitude": -34.88122437618196,
+                        "longitude": -56.19203494866955,
+                        "speed": 0
                     },
                     {
-                        "accuracy": 20,
-                        "altitude": null,
-                        "altitudeAccuracy": null,
-                        "heading": null,
-                        "latitude": -34.8810883,
-                        "longitude": -56.1919854,
-                        "speed": null
+                        "accuracy": 10,
+                        "altitude": -2.04132080078125,
+                        "altitudeAccuracy": 6,
+                        "heading": 262.6171875,
+                        "latitude": -34.881219598497154,
+                        "longitude": -56.192074175976394,
+                        "speed": 0
                     },
                     {
-                        "accuracy": 20,
-                        "altitude": null,
-                        "altitudeAccuracy": null,
-                        "heading": null,
-                        "latitude": -34.8810883,
-                        "longitude": -56.1919854,
-                        "speed": null
+                        "accuracy": 10,
+                        "altitude": 2.5369873046875,
+                        "altitudeAccuracy": 8,
+                        "heading": 28.4765625,
+                        "latitude": -34.88119286022604,
+                        "longitude": -56.192019945062874,
+                        "speed": 0
                     }
                 ],
-                "documentName": "document_1"
+                "documentName": "document_254"
             }
         ]
     }
 ]
+
+

@@ -42,6 +42,10 @@ var templates = [
 	{
 		name: 'export-document-list.html', 
 		content: fs.readFileSync(path.join(__dirname, 'export-document-list.html')).toString()
+	},
+	{
+		name: 'polygon-visual-editor.html', 
+		content: fs.readFileSync(path.join(__dirname, 'polygon-visual-editor.html')).toString()
 	}
 	
 ]

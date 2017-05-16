@@ -3,6 +3,7 @@ I'm a store for named places - given a point I'm able to tell which place it bel
 */
 var _ = require('underscore')
 var Backbone = require('backbone')
+var jQuery = require('jquery')
 
 var Class = function()
 {
@@ -22,9 +23,7 @@ _.extend(Class.prototype, {
 		}
 		function success(pos) 
 		{
-			// debugger;
 			self.currentPosition = pos.coords
-			// console.log(pos.coords)
 			self.trigger('change')
 			self.trigger('done')
 		}
@@ -53,6 +52,13 @@ _.extend(Class.prototype, {
 	getCurrentPosition: function()
 	{
 		return this.currentPosition
+	},
+
+	getCurrentPositionAsync: function()
+	{
+		var deferred = jQuery.Deferred(), self = this
+		this.once('change', function(){deferred.resolve(self.currentPosition)})
+		return deferred
 	}
 })
 
