@@ -14470,12 +14470,12 @@ _.extend(Class.prototype, {
 		}
 		function success(pos) 
 		{
-			if(!self.currentPosition || 
-				self.currentPosition.latitude!=pos.coords.latitude && self.currentPosition.longitude!=pos.coords.longitude)
-			{
+			// if(!self.currentPosition || 
+			// 	self.currentPosition.latitude!=pos.coords.latitude && self.currentPosition.longitude!=pos.coords.longitude)
+			// {
 				self.currentPosition = pos.coords
 				self.trigger('change')
-			}
+			// }
 		}
 
 		function error(err) 
