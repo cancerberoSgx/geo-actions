@@ -13900,7 +13900,7 @@ _(Application.prototype).extend({
 });
 
 module.exports = Application
-},{"../dataset-examples":1,"./PolygonManager":14,"./PositionManager":15,"./Router":16,"backbone":3,"jquery":4,"underscore":5}],8:[function(require,module,exports){
+},{"../dataset-examples":1,"./PolygonManager":14,"./PositionManager":16,"./Router":17,"backbone":3,"jquery":4,"underscore":5}],8:[function(require,module,exports){
 var AbstractView = require('./AbstractView')
 var Backbone = require('backbone')
 var _ = require('underscore')
@@ -14082,7 +14082,7 @@ module.exports = AbstractView.extend({
 		this.currentPositionView.render()
 		this.$el.append(this.currentPositionView.$el)
 
-		var PolygonVisualEditor = require('./navigator/PolygonVisualEditor')
+		var PolygonVisualEditor = require('./PolygonVisualEditor')
 		var editorView = new PolygonVisualEditor(this.application, this.model)
 		editorView.$el = this.$('.visual-editor')
 		editorView.render()
@@ -14150,7 +14150,7 @@ module.exports = AbstractView.extend({
 		
 	}
 })
-},{"./AbstractView":6,"./CurrentPositionView":8,"./navigator/PolygonVisualEditor":18,"backbone":3,"jquery":4,"underscore":5}],14:[function(require,module,exports){
+},{"./AbstractView":6,"./CurrentPositionView":8,"./PolygonVisualEditor":15,"backbone":3,"jquery":4,"underscore":5}],14:[function(require,module,exports){
 /*
 	I'm a store with the application models like polygon and documents and other core utilities.
 	TODO: split in several files
@@ -14311,6 +14311,126 @@ _.extend(Class.prototype, {
 })
 
 },{"backbone":3,"underscore":5}],15:[function(require,module,exports){
+var AbstractView = require('./AbstractView')
+var Backbone = require('backbone')
+var _ = require('underscore')
+var jQuery = require('jquery')
+var google = require('./google')
+
+module.exports = AbstractView.extend({
+
+	template: 'polygon-visual-editor.html',
+
+	initialize: function(application, model)
+	{
+		this.application = application
+		this.model = model
+	},
+
+	afterRender: function()
+	{
+		var self = this
+		// this.application.positionManager.getCurrentPositionAsync().then(function(currentPosition)
+		// {
+			if(this.model.get('points').length)
+			{
+				self.drawMap()
+			}
+			else
+			{
+				console.log('cannot show map because polygon has no points')
+			}
+		// })
+	},
+
+	drawMap: function()
+	{
+		// console.log('drawmap')
+		// try 
+		// {
+
+		var self = this
+		this.path = new google.maps.MVCArray
+		this.markers = []
+
+		var center = new google.maps.LatLng(
+			this.model.get('points')[0].get('latitude'), this.model.get('points')[0].get('longitude'))
+
+		this.$('.map-container').css({
+			width: (this.application.WIDTH-10)+'px', 
+			height: (this.application.HEIGHT/1.5)+'px'
+		})
+		this.map = new google.maps.Map(this.$('.map-container').get(0), {
+			zoom: 40,
+			center: center,
+			mapTypeId: google.maps.MapTypeId.SATELLITE
+		})
+
+		self.poly = new google.maps.Polygon({
+			strokeWeight: 3,
+			fillColor: '#5555FF'
+		})
+
+		self.poly.setMap(this.map)
+		self.poly.setPaths(new google.maps.MVCArray([this.path]))
+
+		google.maps.event.addListener(this.map, 'click', function(e)
+		{
+			self.addPointHandler(e.latLng)
+		})
+
+		self.showPointsInMap()
+
+		// }
+		// catch(ex)
+		// {
+		// 	console.log('error drawing map', ex, ex.message, ex.stack)
+		// }
+	},
+
+	showPointsInMap: function()
+	{
+		var self = this
+		// self.path = []
+		self.poly.setPaths(new google.maps.MVCArray([this.path]))
+		_.each(self.model.get('points'), function(point)
+		{
+			var coord = new google.maps.LatLng(point.get('latitude'), point.get('longitude'))
+			self.addPointHandler(coord)
+		})
+	},
+
+	addPointHandler: function(latLng) 
+	{
+		var self = this
+		this.path.insertAt(this.path.length, latLng)
+
+		var marker = new google.maps.Marker({
+			position: latLng,
+			map: this.map,
+			draggable: true
+		})
+		self.markers.push(marker)
+		marker.setTitle("#" + this.path.length)
+
+		google.maps.event.addListener(marker, 'click', function() 
+		{
+			marker.setMap(null)
+			for (var i = 0, I = self.markers.length; i < I && self.markers[i] != marker; ++i){}
+			self.markers.splice(i, 1)
+			this.path.removeAt(i)
+		})
+
+		google.maps.event.addListener(marker, 'dragend', function() 
+		{
+			for (var i = 0, I = self.markers.length; i < I && self.markers[i] != marker; ++i){}
+			self.path.setAt(i, marker.getPosition())
+		})
+	}
+
+
+})
+},{"./AbstractView":6,"./google":18,"backbone":3,"jquery":4,"underscore":5}],16:[function(require,module,exports){
 /*
 I'm a store for named places - given a point I'm able to tell which place it belong.
 */
@@ -14378,7 +14498,7 @@ _.extend(Class.prototype, {
 
 module.exports = Class
 
-},{"backbone":3,"jquery":4,"underscore":5}],16:[function(require,module,exports){
+},{"backbone":3,"jquery":4,"underscore":5}],17:[function(require,module,exports){
 var Backbone = require('backbone')
 var _ = require('underscore')
 
@@ -14481,7 +14601,9 @@ module.exports = Backbone.Router.extend({
 })
 
 
-},{"./CurrentPositionView":8,"./DocumentEditorView":9,"./DocumentListView":10,"./ExportDocumentListView":11,"./HomeView":12,"./PolygonEditorView":13,"backbone":3,"underscore":5}],17:[function(require,module,exports){
+},{"./CurrentPositionView":8,"./DocumentEditorView":9,"./DocumentListView":10,"./ExportDocumentListView":11,"./HomeView":12,"./PolygonEditorView":13,"backbone":3,"underscore":5}],18:[function(require,module,exports){
+module.exports = google
+},{}],19:[function(require,module,exports){
 var Backbone = require('backbone')
 var _ = require('underscore')
 
@@ -14503,119 +14625,7 @@ app.start()
 // view1.$el = document.body
 // view1.render()
 
-},{"./Application":7,"backbone":3,"underscore":5}],18:[function(require,module,exports){
-var AbstractView = require('../AbstractView')
-var Backbone = require('backbone')
-var _ = require('underscore')
-var jQuery = require('jquery')
-var google = require('./google')
-
-module.exports = AbstractView.extend({
-
-	template: 'polygon-visual-editor.html',
-
-	initialize: function(application, model)
-	{
-		this.application = application
-		this.model = model
-	},
-
-	afterRender: function()
-	{
-		var self = this
-		// this.application.positionManager.getCurrentPositionAsync().then(function(currentPosition)
-		// {
-			if(this.model.get('points').length)
-			{
-				self.drawMap()
-			}
-			else
-			{
-				console.log('cannot show map because polygon has no points')
-			}
-		// })
-	},
-
-	drawMap: function()
-	{
-		var self = this
-		this.path = new google.maps.MVCArray
-		this.markers = []
-
-		var center = new google.maps.LatLng(
-			this.model.get('points')[0].get('latitude'), this.model.get('points')[0].get('longitude'))
-
-		this.$('.map-container').css({
-			width: (this.application.WIDTH-10)+'px', 
-			height: (this.application.HEIGHT/1.5)+'px'
-		})
-		this.map = new google.maps.Map(this.$('.map-container').get(0), {
-			zoom: 40,
-			center: center,
-			mapTypeId: google.maps.MapTypeId.SATELLITE
-		})
-
-		self.poly = new google.maps.Polygon({
-			strokeWeight: 3,
-			fillColor: '#5555FF'
-		})
-
-		self.poly.setMap(this.map)
-		self.poly.setPaths(new google.maps.MVCArray([this.path]))
-
-		google.maps.event.addListener(this.map, 'click', function(e)
-		{
-			self.addPointHandler(e.latLng)
-		})
-
-		self.showPointsInMap()
-	},
-
-	showPointsInMap: function()
-	{
-		var self = this
-		self.path = []
-		self.poly.setPaths(new google.maps.MVCArray([this.path]))
-		_.each(self.model.get('points'), function(point)
-		{
-			var coord = new google.maps.LatLng(point.get('latitude'), point.get('longitude'))
-			self.addPointHandler(coord)
-		})
-	},
-
-	addPointHandler: function(latLng) 
-	{
-		var self = this
-		this.path.insertAt(this.path.length, latLng)
-
-		var marker = new google.maps.Marker({
-			position: latLng,
-			map: this.map,
-			draggable: true
-		})
-		self.markers.push(marker)
-		marker.setTitle("#" + this.path.length)
-
-		google.maps.event.addListener(marker, 'click', function() 
-		{
-			marker.setMap(null)
-			for (var i = 0, I = self.markers.length; i < I && self.markers[i] != marker; ++i){}
-			self.markers.splice(i, 1)
-			this.path.removeAt(i)
-		})
-
-		google.maps.event.addListener(marker, 'dragend', function() 
-		{
-			for (var i = 0, I = self.markers.length; i < I && self.markers[i] != marker; ++i){}
-			self.path.setAt(i, marker.getPosition())
-		})
-	}
-
-
-})
-},{"../AbstractView":6,"./google":19,"backbone":3,"jquery":4,"underscore":5}],19:[function(require,module,exports){
-module.exports = google
-},{}],20:[function(require,module,exports){
+},{"./Application":7,"backbone":3,"underscore":5}],20:[function(require,module,exports){
 (function (Buffer){
 
 var _ = require('underscore')
@@ -16993,4 +17003,4 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}]},{},[17]);
+},{}]},{},[19]);

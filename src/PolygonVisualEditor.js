@@ -1,4 +1,4 @@
-var AbstractView = require('../AbstractView')
+var AbstractView = require('./AbstractView')
 var Backbone = require('backbone')
 var _ = require('underscore')
 var jQuery = require('jquery')
@@ -32,6 +32,10 @@ module.exports = AbstractView.extend({
 
 	drawMap: function()
 	{
+		// console.log('drawmap')
+		// try 
+		// {
+
 		var self = this
 		this.path = new google.maps.MVCArray
 		this.markers = []
@@ -63,12 +67,18 @@ module.exports = AbstractView.extend({
 		})
 
 		self.showPointsInMap()
+
+		// }
+		// catch(ex)
+		// {
+		// 	console.log('error drawing map', ex, ex.message, ex.stack)
+		// }
 	},
 
 	showPointsInMap: function()
 	{
 		var self = this
-		self.path = []
+		// self.path = []
 		self.poly.setPaths(new google.maps.MVCArray([this.path]))
 		_.each(self.model.get('points'), function(point)
 		{
