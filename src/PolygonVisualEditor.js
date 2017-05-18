@@ -12,7 +12,21 @@ module.exports = AbstractView.extend({
 	{
 		this.application = application
 		this.model = model
+		// var self = this
+		this.application.positionManager.on('change', _.bind(this.handleCurrentPosition, this))
 	},
+
+	handleCurrentPosition: function()
+	{
+		var pos = this.application.positionManager.getCurrentPosition()
+		var coord = new google.maps.LatLng(pos.latitude, pos.longitude)
+		var marker = new google.maps.Marker({
+			position: coord,
+			map: this.map,
+			draggable: false
+		})
+	},
+			
 
 	afterRender: function()
 	{

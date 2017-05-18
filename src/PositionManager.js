@@ -23,16 +23,18 @@ _.extend(Class.prototype, {
 		}
 		function success(pos) 
 		{
-			self.currentPosition = pos.coords
-			self.trigger('change')
-			self.trigger('done')
+			if(!self.currentPosition || 
+				self.currentPosition.latitude!=pos.coords.latitude && self.currentPosition.longitude!=pos.coords.longitude)
+			{
+				self.currentPosition = pos.coords
+				self.trigger('change')
+			}
 		}
 
 		function error(err) 
 		{
 			console.warn('ERROR(' + err.code + '): ' + err.message);
-			// alert('You must let your browser/device to track your position in order to use this application, sorry! Error: '+err.code+', '+err.message)
-			self.trigger('done')
+			self.trigger('change')
 		}
 
 		var options = {
