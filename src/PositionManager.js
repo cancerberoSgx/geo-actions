@@ -31,7 +31,6 @@ _.extend(Class.prototype, {
 				// console.log('geo success ', pos)
 				// debugger
 				self.currentPosition = pos
-
 				self.trigger('change')
 			}
 		}
@@ -50,7 +49,21 @@ _.extend(Class.prototype, {
 			maximumAge: 0
 		}
 
-		this.watchError = navigator.geolocation.watchPosition(success, error, options)
+		// this.watchError = navigator.geolocation.watchPosition(success, error, options)
+
+
+		self.currentPosition2Id = setInterval(function()
+		{
+			navigator.geolocation.getCurrentPosition(function(pos)
+			{
+				if(!self.currentPosition || pos.timestamp>self.currentPosition.timestamp)
+				{
+					// TODO: trigger change only if really change the coords
+					self.currentPosition = pos
+					self.trigger('change')
+				}
+			})
+		}, 4000)
 	},
 
 	stopWatching: function()
