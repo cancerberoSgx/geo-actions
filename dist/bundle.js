@@ -14470,16 +14470,23 @@ _.extend(Class.prototype, {
 		}
 		function success(pos) 
 		{
+			if(!self.currentPosition || pos.timestamp>self.currentPosition.timestamp)
+			{
+				// TODO: trigger change only if really change the coords
 			// if(!self.currentPosition || 
 			// 	self.currentPosition.latitude!=pos.coords.latitude && self.currentPosition.longitude!=pos.coords.longitude)
-			// {
-				self.currentPosition = pos.coords
+				// console.log('geo success ', pos)
+				// debugger
+				self.currentPosition = pos
+
 				self.trigger('change')
-			// }
+			}
 		}
 
 		function error(err) 
 		{
+			console.log('geo error ', pos)
+			// debugger
 			console.warn('ERROR(' + err.code + '): ' + err.message);
 			self.trigger('change')
 		}
@@ -14500,7 +14507,7 @@ _.extend(Class.prototype, {
 
 	getCurrentPosition: function()
 	{
-		return this.currentPosition
+		return this.currentPosition ? this.currentPosition.coords : null
 	},
 
 	getCurrentPositionAsync: function()
